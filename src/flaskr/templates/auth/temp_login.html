@@ -1,0 +1,128 @@
+{% extends 'temp_base.html' %}
+
+{% block header %}
+  <h1>{% block title %}登录与注册{% endblock %}</h1>
+{% endblock %}
+
+{% block detail %}
+  <html xmlns="http://www.w3.org/1999/xhtml">
+  <head runat="server">
+  <div class="layui-container fly-marginTop">
+  <div class="fly-panel fly-panel-user" pad20>
+    <div class="layui-tab layui-tab-brief" lay-filter="user">
+      <ul class="layui-tab-title">
+        <li class="layui-this">登入</li>
+        <li><a href="{{ url_for('auth.register') }}">注册</a></li>
+      </ul>
+      <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
+        <div class="layui-tab-item layui-show">
+          <div class="layui-form layui-form-pane">
+            <form method="post" runat="server" onsubmit="">
+              <div class="layui-form-item">
+                <label for="username" class="layui-form-label">用户名</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="username" name="username" required lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+              <div class="layui-form-item">
+                <label for="password" class="layui-form-label">密码</label>
+                <div class="layui-input-inline">
+                  <input type="password" id="password" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
+                </div>
+              </div>
+
+              <div class="layui-form-item">
+                <label for="L_vercode" class="layui-form-label">验证码</label>
+                <div class="layui-input-inline">
+                  <input type="text" id="inputCode" name="imagecode" required lay-verify="required" autocomplete="off" class="layui-input" placeholder="请输入验证码">
+                </div>
+                <img class="verify_code" src="/auth/code " onclick="this.src='/auth/code?'+ Math.random()">
+              </div>
+
+              <div class="layui-form-item">
+                <button class="layui-btn" lay-filter="*" lay-submit onclick="">立即登录</button>
+              </div>
+              {% for message in get_flashed_messages() %}
+                   <div class="warning" style="color:#FF5722;">{{ message }}</div>
+                 {% endfor %}
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!--
+<script language="javascript" type="text/javascript">
+  window.onload = createCode();
+  var code;
+  function createCode() {
+    code = "";
+    var codeLength = 6; //验证码的长度
+    var checkCode = document.getElementById("checkCode");
+    var codeChars = new Array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+    'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+    'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z'); //所有候选组成验证码的字符，当然也可以用中文的
+    for (var i = 0; i < codeLength; i++) {
+      var charNum = Math.floor(Math.random() * 52);
+      code += codeChars[charNum];
+    }
+    if (checkCode) {
+      checkCode.className = "code";
+      checkCode.innerHTML = code;
+    }
+  }
+  function validateCode() {
+    var inputCode = document.getElementById("inputCode").value;
+    if (inputCode.length <= 0) {
+      alert("请输入验证码！");
+      window.location = "http://127.0.0.1:5000"
+      return;
+    }
+    else if (inputCode.toUpperCase() != code.toUpperCase()) {
+      alert("验证码输入有误！");
+      //createCode();
+      window.location = "http://127.0.0.1:5000"
+      return;
+    } else
+    {
+        alert("对啦！");
+        window.location = "http://127.0.0.1:5000"
+        return;
+    }
+  }
+</script>
+<style type="text/css">
+  .code
+  {
+    background:url(a.jpg);
+    font-family:Arial;
+    font-style:italic;
+    color:#009688;
+    font-size:30px;
+    border:0;
+    padding:0px 3px;
+    letter-spacing:3px;
+    font-weight:bolder;
+    float:left;
+    cursor:pointer;
+    width:150px;
+    height:60px;
+    line-height:60px;
+    text-align:center;
+    margin-top:-9px;
+    margin-bottom: 5px;
+  }
+  a
+  {
+    text-decoration:none;
+    font-size:12px;
+    color:#009688;
+  }
+  a:hover
+  {
+    text-decoration:underline;
+  }
+</style>
+-->
+{% endblock %}
