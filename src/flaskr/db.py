@@ -10,7 +10,8 @@ from peewee import *
 
 host = "127.0.0.1"
 user = "root"
-passwd = 'HWzyk123!@#'
+# passwd = 'HWzyk123!@#'
+passwd = 'syh96117'
 database = "CatEatPad"
 mydatabase = MySQLDatabase(host=host, user=user, passwd=passwd, database=database, charset="utf8", port=3306)
 mydatabase.connect()
@@ -76,6 +77,6 @@ class post_file(BaseModel):
     filename = TextField()
     filehash = TextField()
 
-mydatabase.create_tables([post])
+mydatabase.create_tables([user, post])
 def init_app(app):
     return
