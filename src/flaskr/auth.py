@@ -24,23 +24,23 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 def validate_picture():
     total = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345789'
-    # 图片大小130 x 50
+    # Image size 130 x 50
     width = 150
     heighth = 40
-    # 先生成一个新图片对象
+    # Create a new Image object
     im = Image.new('RGB',(width, heighth), 'White')
-    # 设置字体
+    # Set character front
     font = ImageFont.truetype("/Library/Fonts/Arial", 28)
-    # 创建draw对象
+    # Create ImageDraw object
     draw = ImageDraw.Draw(im)
     str = ''
-    # 输出每一个文字
+    # Output each char
     for item in range(5):
         text = random.choice(total)
         str += text
         draw.text((13+random.randint(4,7)+20*item,random.randint(3,7)), text=text, fill='Black', font=font)
 
-    # 划几根干扰线
+    # Draw lines
     for num in range(8):
         x1 = random.randint(0, width/2)
         y1 = random.randint(0, heighth/2)
@@ -48,7 +48,7 @@ def validate_picture():
         y2 = random.randint(heighth/2, heighth)
         draw.line(((x1, y1),(x2,y2)), fill='black', width=1)
 
-    # 模糊下,加个帅帅的滤镜～
+    # Add image filter to the image
     im = im.filter(ImageFilter.FIND_EDGES)
     return im, str
 
@@ -174,13 +174,13 @@ def login_required(view):
 @bp.route('/code')
 def get_code():
     image, str = validate_picture()
-    # 将验证码图片以二进制形式写入在内存中，防止将图片都放在文件夹中，占用大量磁盘
+    # Write binary format image into the memory, release the space in disk
     buf = BytesIO()
     image.save(buf, 'jpeg')
     buf_str = buf.getvalue()
-    # 把二进制作为response发回前端，并设置首部字段
+    # send binary image as respond to the frontend and set the header
     response = make_response(buf_str)
     response.headers['Content-Type'] = 'image/gif'
-    # 将验证码字符串储存在session中
+    # save image code as string into the session
     session['imagecode'] = str
     return response
