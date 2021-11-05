@@ -82,7 +82,7 @@ def get_register_info(form):
     elif len(user.select(user.id).where(user.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
     elif imagecode != session['imagecode']:
-        error = '验证码错误'
+        error = 'Imagecode incorrect'
 
     return username, generate_password_hash(password), nickname, email, error
 
