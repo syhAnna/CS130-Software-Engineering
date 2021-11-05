@@ -14,52 +14,20 @@ from flask import (
 from werkzeug.security import check_password_hash, generate_password_hash
 from playhouse.shortcuts import model_to_dict
 from .db import *
-from PIL import Image, ImageFont, ImageDraw, ImageFilter
-import random
+from .util import *
 from io import BytesIO
-from pprint import pprint
+import logging
 
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
-
-def validate_picture():
-    total = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345789'
-    # 图片大小130 x 50
-    width = 150
-    heighth = 40
-    # 先生成一个新图片对象
-    im = Image.new('RGB',(width, heighth), 'White')
-    # 设置字体
-    font = ImageFont.truetype("/Library/Fonts/Arial", 28)
-    # 创建draw对象
-    draw = ImageDraw.Draw(im)
-    str = ''
-    # 输出每一个文字
-    for item in range(5):
-        text = random.choice(total)
-        str += text
-        draw.text((13+random.randint(4,7)+20*item,random.randint(3,7)), text=text, fill='Black', font=font)
-
-    # 划几根干扰线
-    for num in range(8):
-        x1 = random.randint(0, width/2)
-        y1 = random.randint(0, heighth/2)
-        x2 = random.randint(0, width)
-        y2 = random.randint(heighth/2, heighth)
-        draw.line(((x1, y1),(x2,y2)), fill='black', width=1)
-
-    # 模糊下,加个帅帅的滤镜～
-    im = im.filter(ImageFilter.FIND_EDGES)
-    return im, str
-
-
+# TODO: now a window shows the error message, we want error message can show in the register page!
 def get_register_info(form):
-    username = request.form['username']
-    password = request.form['password']
-    nickname = request.form['nickname']
-    repassword = request.form['repassword']
-    email = request.form['email']
-    imagecode = request.form['imagecode']
+    username = form['username']
+    password = form['password']
+    nickname = form['nickname']
+    repassword = form['repassword']
+    email = form['email']
+    imagecode = form['imagecode']
     error = None
     if not nickname:
         nickname = username
@@ -82,7 +50,7 @@ def get_register_info(form):
     elif len(user.select(user.id).where(user.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
     elif imagecode != session['imagecode']:
-        error = '验证码错误'
+        error = 'wrong validate code!'
 
     return username, generate_password_hash(password), nickname, email, error
 
@@ -90,11 +58,9 @@ def get_register_info(form):
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        print(request.form)
+        logging.info(request.form)
         username, password, nickname, email, error = get_register_info(request.form)
-        pprint(username)
-        pprint(nickname)
-        pprint(error)
+        logging.info(f"new user info: username: {username}, nickname: {nickname}, error: {error}")
 
         if error is None:
             user.insert({
@@ -117,14 +83,14 @@ def get_login_info(form):
     error = None
     User = user.select().where(user.username == username)
     if len(User) == 0:
-        error = "用户名不存在"
+        error = "user not exist!"
         User = None
     else:
         User = User.get()
-        if not check_password_hash(User.password, password):
-            error = "密码不正确"
-        elif imagecode != session['imagecode']:
-            error = "验证码错误"
+        if imagecode != session['imagecode']:
+            error = "imagecode not correct"
+        elif not check_password_hash(User.password, password):
+            error = "password not correct"
 
     return User, error
 
@@ -132,12 +98,12 @@ def get_login_info(form):
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        # print(request.form)
-        User, error = get_login_info(request.form)
+        # logging.info(request.form)
+        user, error = get_login_info(request.form)
 
         if error is None:
             session.clear()
-            session['user_id'] = User.id
+            session['user_id'] = user.id
             return redirect(url_for('index'))
 
         flash(error)    # stores messages that can be retrieved when rendering the template.
@@ -173,7 +139,7 @@ def login_required(view):
 
 @bp.route('/code')
 def get_code():
-    image, str = validate_picture()
+    image, str = generate_validate_picture()
     # 将验证码图片以二进制形式写入在内存中，防止将图片都放在文件夹中，占用大量磁盘
     buf = BytesIO()
     image.save(buf, 'jpeg')
