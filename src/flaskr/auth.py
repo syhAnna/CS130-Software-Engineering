@@ -117,14 +117,14 @@ def get_login_info(form):
     error = None
     User = user.select().where(user.username == username)
     if len(User) == 0:
-        error = "用户名不存在"
+        error = "Username Does Not Exist"
         User = None
     else:
         User = User.get()
         if not check_password_hash(User.password, password):
-            error = "密码不正确"
+            error = "Password Incorrect"
         elif imagecode != session['imagecode']:
-            error = "验证码错误"
+            error = "Imagecode Incorrect"
 
     return User, error
 
