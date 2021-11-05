@@ -50,7 +50,7 @@ def get_register_info(form):
     elif len(user.select(user.id).where(user.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
     elif imagecode != session['imagecode']:
-        error = 'wrong validate code!'
+        error = 'Imagecode incorrect'
 
     return username, generate_password_hash(password), nickname, email, error
 
@@ -83,14 +83,14 @@ def get_login_info(form):
     error = None
     User = user.select().where(user.username == username)
     if len(User) == 0:
-        error = "user not exist!"
+        error = "Username Does Not Exist"
         User = None
     else:
         User = User.get()
-        if imagecode != session['imagecode']:
-            error = "imagecode not correct"
-        elif not check_password_hash(User.password, password):
-            error = "password not correct"
+        if not check_password_hash(User.password, password):
+            error = "Password Incorrect"
+        elif imagecode != session['imagecode']:
+            error = "Imagecode Incorrect"
 
     return User, error
 
@@ -139,14 +139,14 @@ def login_required(view):
 
 @bp.route('/code')
 def get_code():
+    # Write binary format image into the memory, release the space in disk
     image, str = generate_validate_picture()
-    # 将验证码图片以二进制形式写入在内存中，防止将图片都放在文件夹中，占用大量磁盘
     buf = BytesIO()
     image.save(buf, 'jpeg')
     buf_str = buf.getvalue()
-    # 把二进制作为response发回前端，并设置首部字段
+    # send binary image as respond to the frontend and set the header
     response = make_response(buf_str)
     response.headers['Content-Type'] = 'image/gif'
-    # 将验证码字符串储存在session中
+    # save image code as string into the session
     session['imagecode'] = str
     return response

@@ -1,7 +1,7 @@
 {% extends 'temp_base.html' %}
 
 {% block header %}
-  <h1>{% block title %}管理员系统{% endblock %}</h1>
+  <h1>{% block title %}CatEatPad{% endblock %}</h1>
 {% endblock %}
 
 {% block detail %}
@@ -9,11 +9,11 @@
 	<div style="position:absolute;left:90px;top:62px" class="fly-panel fly-column">
 		<div class="layui-container"> 
 			<ul class="layui-clear"> 
-				<li class="layui-hide-xs  layui-this"><a href="/">首页</a></li>
-                <li> <a href="{{ url_for('admin.admin_home') }}"> 管理员首页 </a> </li>
-				<li> <a href="{{ url_for('admin.Member') }}"> 用户管理 </a> </li>
-				<li> <a href="{{ url_for('admin.Post') }}"> 帖子管理  </a> </li>
-				<li> <a href="{{ url_for('admin.Doc') }}"> 文件管理 </a> </li>
+				<li class="layui-hide-xs  layui-this"><a href="/">Home Page</a></li>
+                <li> <a href="{{ url_for('admin.admin_home') }}"> Administrator Home Page </a> </li>
+				<li> <a href="{{ url_for('admin.Member') }}"> User Management </a> </li>
+				<li> <a href="{{ url_for('admin.Post') }}"> Post Management  </a> </li>
+				<li> <a href="{{ url_for('admin.Doc') }}"> File Management </a> </li>
 			</ul>
 		</div>
 	</div>
@@ -38,7 +38,7 @@
 
 
 <div style="position:absolute;left:90px;top:420px" class="layui-container">
-	<div class="fly-home fly-panel"">
+	<div class="fly-home fly-panel">
 	<h1> {{ post['nickname'] }}</h1>
 	<p class="fly-home-info">
 		<i class="iconfont icon-shijian"></i>
@@ -51,7 +51,7 @@
   	</p>
   	<p class="fly-home-info">
     	<i class="iconfont icon-shijian"></i>
-    	<span>{{ post['created'].strftime('%Y-%m-%d') }} 加入</span>
+    	<span>{{ post['created'].strftime('%Y-%m-%d') }} Add</span>
   	</p>
 	</div>
 </div>
@@ -63,7 +63,7 @@
       <div class="layui-col-md3 layui-bg-green" style="text-align:center">
         <div class="fly-panel layui-bg-green">
           <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-          <h1>开发者</h1>
+          <h1>Developer</h1>
           <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         </div>
       </div>
@@ -74,31 +74,31 @@
             <br><br>
             <thead>
               <tr>
-                <th style="text-align:center">照片</th>
-                <th style="text-align:center">姓名</th>
-                <th style="text-align:center">学号</th>
+                <th style="text-align:center">Photo</th>
+                <th style="text-align:center">Name</th>
+                <th style="text-align:center">ID</th>
               </tr>
             </thead>
             <tbody>
               <tr>
                 <td style="text-align:center"><img src="{{ url_for('static', filename='pic/zyk.jpg') }}"  alt="春天" width = '100%'></td>
-                <td style="text-align:center">朱熠恺</td>
-                <td style="text-align:center">1600012810</td>
+                <td style="text-align:center">User1</td>
+                <td style="text-align:center">ID1</td>
               </tr>
               <tr>
                 <td style="text-align:center"><img src="{{ url_for('static', filename='pic/wrh.jpg') }}"  alt="春天" width = '100%'></td>
-                <td style="text-align:center">吴睿海</td>
-                <td style="text-align:center">1600012824</td>
+                <td style="text-align:center">User2</td>
+                <td style="text-align:center">ID2</td>
               </tr>
               <tr>
                 <td style="text-align:center"><img src="{{ url_for('static', filename='pic/xqm.jpg') }}"  alt="春天" width = '100%'></td>
-                <td style="text-align:center">徐沁玫</td>
-                <td style="text-align:center">1600012973</td>
+                <td style="text-align:center">User3</td>
+                <td style="text-align:center">ID3</td>
               </tr>
               <tr>
                 <td style="text-align:center"><img src="{{ url_for('static', filename='pic/zyx.jpg') }}"  alt="春天" width = '100%'></td>
-                <td style="text-align:center">赵宇瑄</td>
-                <td style="text-align:center">1600012984</td>
+                <td style="text-align:center">User4</td>
+                <td style="text-align:center">ID4</td>
               </tr>
             </tbody>
           </table>
@@ -116,8 +116,8 @@
       <div class="layui-col-md3 " style="text-align:center">
         <div class="fly-panel layui-bg-green">
           <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-          <h1>开发者的</h1>
-          <h1>更新</h1>
+          <h1>Developer's</h1>
+          <h1>Update</h1>
           <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
         <br><br><br>
         </div>
@@ -134,7 +134,7 @@
       <div class="layui-col-md8">
         <ul class="layui-timeline">
           <br><br>
-          <h1 style="margin-left: 300px"><font style="color:#009688">时间线</font></h1>
+          <h1 style="margin-left: 300px"><font style="color:#009688">Timeline</font></h1>
           <br><br>
 
           <li class="layui-timeline-item">

@@ -1,7 +1,7 @@
 
 {% extends 'temp_base.html' %}
 {% block header %}
-  <h1>{% block title %}个人主页{% endblock %}</h1>
+  <h1>{% block title %}User Home Page{% endblock %}</h1>
 {% endblock %}
 
 {% block detail %}
@@ -9,12 +9,6 @@
   <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg" alt="贤心">
   <h1>
     {{ user['nickname'] }}
-    <!-- <i class="iconfont icon-nv"></i>  -->
-    <!--
-    <span style="color:#c00;">（管理员）</span>
-    <span style="color:#5FB878;">（社区之光）</span>
-    <span>（该号已被封）</span>
-    -->
   </h1>
 
   <p class="fly-home-info">
@@ -24,7 +18,7 @@
   </p>
   
   <p class="fly-home-info">
-    <i class="iconfont icon-shijian"></i><span>{{ user['created'].strftime('%Y-%m-%d') }} 加入</span>
+    <i class="iconfont icon-shijian"></i><span>{{ user['created'].strftime('%Y-%m-%d') }} Add</span>
   </p>
 </div>
 
@@ -32,13 +26,13 @@
   <div class="layui-row layui-col-space15">
     <div class="layui-col-md6 fly-home-jie">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">{{ user['nickname'] }} 最近发布的帖子</h3>
+        <h3 class="fly-panel-title">{{ user['nickname'] }} Recent Published Post</h3>
         <ul class="jie-row">
           {% for post in user['posts'] %}
           <li>
             <a href="{{ url_for('blog.ViewPost', id=post['id']) }}" class="jie-title"> {{post['title']}}</a>
             <i>{{ post['created'].strftime('%Y-%m-%d') }}</i>
-            <em class="layui-hide-xs">{{ post['marknum'] }}收藏/{{ post['replynum'] }}回复</em>
+            <em class="layui-hide-xs">{{ post['marknum'] }}Collects/{{ post['replynum'] }}Replies</em>
           </li>
           {% endfor %}
         </ul>
@@ -47,13 +41,13 @@
     
     <div class="layui-col-md6 fly-home-jie">
       <div class="fly-panel">
-        <h3 class="fly-panel-title">{{ user['nickname'] }} 最近收藏的帖子</h3>
+        <h3 class="fly-panel-title">{{ user['nickname'] }} Recent Collected Post</h3>
         <ul class="jie-row">
           {% for post in user['markposts'] %}
           <li>
             <a href="{{ url_for('blog.ViewPost', id=post['id']) }}" class="jie-title"> {{post['title']}}</a>
             <i>{{ post['created'].strftime('%Y-%m-%d') }}</i>
-            <em class="layui-hide-xs">{{ post['marknum'] }}收藏/{{ post['replynum'] }}回复</em>
+            <em class="layui-hide-xs">{{ post['marknum'] }}Collects/{{ post['replynum'] }}Replies</em>
           </li>
           {% endfor %}
         </ul>
@@ -62,7 +56,7 @@
   </div>
 <br>
     <br>
-    <p style="text-align:center"><span style="color:#c2c2c2">ICS 社区 2018 &copy; Web 小组出品</span></p>
+    <p style="text-align:center"><span style="color:#c2c2c2">CatEatPad</span></p>
     <br>
 <br>
 </div>

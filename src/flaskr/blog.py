@@ -267,7 +267,7 @@ def ADD_COLLECT(id):
 
     is_collect = check_is_collect(user_id, id)
     if (is_collect == False):
-        print("add collect!")
+        print("Add Collect!")
 
         t = collects.insert(author_id=user_id, post_id=id)
         t.execute()
@@ -342,7 +342,7 @@ def create():
             os.mkdir(savepath)
 
         if not title:
-            error = 'Title is required.'
+            error = 'Title Is Required.'
 
         if error is not None:
             flash(error)
@@ -413,7 +413,7 @@ def CHECK_DOWNLOADFILE(post_file_id, filename):
         content = f.read()
         filehash = model_to_dict(post_file.select().where(post_file.id == post_file_id).get())['filehash']
         if not check_password_hash(filehash, content):
-            error = "文件已被修改"
+            error = "File Has Been Modified"
             return error
 
 

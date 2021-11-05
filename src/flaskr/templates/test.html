@@ -16,7 +16,7 @@ layui.use('layedit', function(){
                              height: 150,
                              tool:['strong','italic','underline','del','|','left','right','center','link','face']});
    var form = layui.form();
-                //监听提交
+                //Keep track of submit
                 form.on('submit(formDemo)', function (data) {
                     layer.msg(JSON.stringify(data.field));
                     return false;
