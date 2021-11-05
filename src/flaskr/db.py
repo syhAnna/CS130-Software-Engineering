@@ -5,13 +5,11 @@
 
 from flask import current_app, g
 from flask.cli import with_appcontext
+import json
 from peewee import *
 
-
-host = "127.0.0.1"
-user = "root"
-passwd = 'HWzyk123!@#'
-database = "CatEatPad"
+dbConfig = json.load(open("flaskr/dbConfig.json"))
+host, user, passwd, database = dbConfig["host"], dbConfig["user"], dbConfig["passwd"], dbConfig["database"]
 mydatabase = MySQLDatabase(host=host, user=user, passwd=passwd, database=database, charset="utf8", port=3306)
 mydatabase.connect()
 
