@@ -11,7 +11,7 @@
       <div class="fly-panel detail-box">
         <h1>{{ post['title'] }}</h1>
         <div class="fly-detail-info">
-          <!--加精和置顶-->
+          <!--Top post-->
 
         <!--
           {% if post['goodpost'] %}
@@ -19,29 +19,29 @@
           {% endif %}
           -->
 
-          <!--收藏和点赞，功能还没完全写完，之后会有一个收藏和取消收藏，反正位置都在这-->
+          <!--Collect and Likes-->
         {% if g.user %}
           <div class="layui-btn-container">
             {% if post['is_top']==1 %}
-              <span class="layui-badge layui-bg-black">置顶</span>
+              <span class="layui-badge layui-bg-black">Top Post</span>
             {% endif %}
             {% if is_collect %}
-            <a href="{{ url_for('blog.UNCOLLECT', id=post['id']) }}"  class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">取消收藏</a>
+            <a href="{{ url_for('blog.UNCOLLECT', id=post['id']) }}"  class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">Cancel Collect</a>
             {% else %}
-            <a href="{{ url_for('blog.COLLECT', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius">收藏</a>
+            <a href="{{ url_for('blog.COLLECT', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius">Collect</a>
             {% endif %}
             {% if is_like %}
-            <a href="{{ url_for('blog.UNLIKE', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">取消点赞</a>
+            <a href="{{ url_for('blog.UNLIKE', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">Cancel Like</a>
             {% else %}
-            <a href="{{ url_for('blog.LIKE', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius">点赞</a>
+            <a href="{{ url_for('blog.LIKE', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius">Like</a>
             {% endif %}
           </div>
         {% endif %}
           
           <span class="fly-list-nums"> 
             <!--
-            <a href="#comment"><i class="iconfont" title="回复">&#xe60c;</i> {{post['replynum']}}</a>
-            <i class="iconfont" title="点击">&#xe60b;</i> {{post['clicknum']}}
+            <a href="#comment"><i class="iconfont" title="Reply">&#xe60c;</i> {{post['replynum']}}</a>
+            <i class="iconfont" title="Click">&#xe60b;</i> {{post['clicknum']}}
           -->
           </span>
         </div>
@@ -58,10 +58,10 @@
 
           {% if g.user %}
           {% if g.user['username']==post['username'] %}
-          <!--删除帖子是楼主权限-->
+          <!--Only owner can delete the post-->
           <form action="{{ url_for('blog.DeletePost', id=post['id']) }}" method="post">
            <div class="detail-hits" id="LAY_jieAdmin" data-id="post['id']">
-            <input class="layui-btn layui-btn-xs jie-admin" type="submit" value="删除此帖" onclick="return confirm('确定删除帖子？');">
+            <input class="layui-btn layui-btn-xs jie-admin" type="submit" value="Delete the Post" onclick="return confirm('Are You Sure to Delete the Post?');">
           </div>
           </form>
           {% endif %}
@@ -87,7 +87,7 @@
 
       <div class="fly-panel detail-box" id="flyReply">
         <fieldset class="layui-elem-field layui-field-title" style="text-align: center;">
-          <legend>回帖</legend>
+          <legend>Reply</legend>
         </fieldset>
 
         <ul class="jieda" id="jieda">
@@ -103,7 +103,7 @@
                   <cite>{{ reply['username'] }}</cite>
                 </a>
                 {% if reply['username']==post['username'] %}
-                <span>(楼主)</span>
+                <span>(Owner)</span>
                 {% endif %}
               </div>
 
@@ -128,8 +128,6 @@
             </div>
           </li>
           {% endfor %}
-          <!-- 无数据时 -->
-          <!-- <li class="fly-none">消灭零回复</li> -->
         </ul>
         {% if g.user and g.user['is_block']==0 %}
         <div class="layui-form layui-form-pane">
@@ -137,12 +135,12 @@
             <div class="layui-form-item layui-form-text">
               <a name="comment"></a>
               <div class="layui-input-block">
-                <textarea id="body" name="body" required lay-verify="article_desc" placeholder="请输入内容"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
+                <textarea id="body" name="body" required lay-verify="article_desc" placeholder="Please Enter Something"  class="layui-textarea fly-editor" style="height: 150px;"></textarea>
               </div>
             </div>
             <div class="layui-form-item">
               <input type="hidden" value="Save">
-              <button class="layui-btn" lay-filter="body" lay-submit>提交回复</button>
+              <button class="layui-btn" lay-filter="body" lay-submit>Submit Reply</button>
             </div>
           </form>
         </div>
@@ -159,13 +157,13 @@ layui.use(['layer', 'form', 'layedit'], function () {
                     tool:['strong','underline','del','|','link','face']
           });
                  var form = layui.form;
-                //监听提交
+                //track submission
                 form.verify({
                     article_desc: function(value){
                         layedit.sync(index);
                         sleep(100);
                         if(value.length < 15){
-                        return '不能少于15字哦';
+                        return 'Cannot Enter Less Than 15 Characters :)';
                         }
                     }
                 });
