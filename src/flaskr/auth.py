@@ -30,7 +30,7 @@ def validate_picture():
     # 先生成一个新图片对象
     im = Image.new('RGB',(width, heighth), 'White')
     # 设置字体
-    font = ImageFont.truetype("C:\Windows\Fonts\Arial.ttf", 28)
+    font = ImageFont.truetype("/Library/Fonts/Arial", 28)
     # 创建draw对象
     draw = ImageDraw.Draw(im)
     str = ''
