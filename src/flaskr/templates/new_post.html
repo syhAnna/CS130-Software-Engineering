@@ -1,7 +1,7 @@
 {% extends 'new_index.html' %}
 
 {% block header %}
-  <h1>{% block title %}帖子管理{% endblock %}</h1>
+  <h1>{% block title %}Post Management{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -9,9 +9,9 @@
     <canvas id="myCanvas" width="150px" height="500px" horizontalScrollPolicy="off"></canvas>
   <div style="position:absolute;left:90px;top:140px" class="layui-container">
   <form action="" method="post" enctype="multipart/form-data">
-    <input type="text" id="title" name="title" required  lay-verify="required" placeholder="请输入帖子相关信息" autocomplete="off" class="layui-input">
+    <input type="text" id="title" name="title" required  lay-verify="required" placeholder="Please Enter the Relevant Information of The Post" autocomplete="off" class="layui-input">
      <div class="fly-column-right layui-hide-xs">
-      <button type="submit" class="layui-btn" lay-filter="*" lay-submit>搜索帖子</button>
+      <button type="submit" class="layui-btn" lay-filter="*" lay-submit>Search Post</button>
      </div>
   </form>
   </div>
@@ -20,13 +20,13 @@
 <table class="layui-table">
   <thead>
     <tr>
-      <th width="20" style="text-align:center">帖子ID</th>
-      <th width="100" style="text-align:center">用户昵称</th>
-      <th width="100" style="text-align:center">发帖题目</th>
-      <th width="100" style="text-align:center">发帖时间</th>
-      <th width="100" style="text-align:center">置顶状态</th>
-        <th width="100" style="text-align:center">置顶操作</th>
-      <th width="1" style="text-align:center">删除</th>
+      <th width="20" style="text-align:center">Post ID</th>
+      <th width="100" style="text-align:center">User Nickname</th>
+      <th width="100" style="text-align:center">Post Title</th>
+      <th width="100" style="text-align:center">Post Time</th>
+      <th width="100" style="text-align:center">TopPost State</th>
+        <th width="100" style="text-align:center">TopPost Operation</th>
+      <th width="1" style="text-align:center">Delete</th>
     </tr> 
   </thead>
   {% for post in posts %}
@@ -37,23 +37,23 @@
       <td style="text-align:center">{{ post['title'] }}</td>
       <td style="text-align:center">{{ post['created'] }}</td>
         {% if post['is_top'] == 1 %}
-            <td style="text-align:center">置顶</td>
+            <td style="text-align:center">TopPost</td>
             <td style="text-align:center">
             <form action="{{ url_for('admin.TopPost', id=[post['id'],0]) }}" method="post">
-                <button class="layui-btn layui-btn-normal layui-btn-xs"  lay-filter="*" lay-submit type="submit">解除置顶</button>
+                <button class="layui-btn layui-btn-normal layui-btn-xs"  lay-filter="*" lay-submit type="submit">Release TopPost State</button>
             </form>
             </td>
         {% else %}
-            <td style="text-align:center">未被置顶</td>
+            <td style="text-align:center">Not in a TopPost State</td>
             <td style="text-align:center">
             <form action="{{ url_for('admin.TopPost', id=[post['id'],1]) }}" method="post">
-                <button class="layui-btn layui-btn-warm layui-btn-xs"  lay-filter="*" lay-submit type="submit">置顶</button>
+                <button class="layui-btn layui-btn-warm layui-btn-xs"  lay-filter="*" lay-submit type="submit">TopPost</button>
             </form>
             </td>
         {% endif %}
       <td style="text-align:center">
           <form action="{{ url_for('admin.DeletePost', id=post['id']) }}" method="post">
-              <button class="layui-btn layui-btn-danger layui-btn-xs"  lay-filter="*" lay-submit type="submit">删除帖子</button>
+              <button class="layui-btn layui-btn-danger layui-btn-xs"  lay-filter="*" lay-submit type="submit">Delete Post</button>
           </form>
         <!--<button class="layui-btn layui-btn-sm layui-btn-danger" href="{{ url_for('admin.DeletePost', id=post['id']) }}">
           <i class="layui-icon">&#xe640;</i>
@@ -64,7 +64,7 @@
   {% endfor %}
 </table>
 <br>
-    <p style="text-align:center"><span style="color:#c2c2c2">Admin管理系统 2018 &copy; Web 小组出品</span></p>
+    <p style="text-align:center"><span style="color:#c2c2c2">CatEatPad</span></p>
 <br><br>
   </div>
 </div>
