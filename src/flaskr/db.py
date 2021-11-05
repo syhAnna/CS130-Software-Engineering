@@ -74,6 +74,6 @@ class post_file(BaseModel):
     filename = TextField()
     filehash = TextField()
 
-mydatabase.create_tables([post])
+mydatabase.create_tables([user, post])
 def init_app(app):
     return
