@@ -2,7 +2,7 @@
 {% extends 'blog/temp_indextop.html' %}
 
 {% block header %}
-  <h1>{% block title %}个人设置{% endblock %}</h1>
+  <h1>{% block title %}User Settings{% endblock %}</h1>
 {% endblock %}
 
 {% block all_content %}
@@ -13,19 +13,19 @@
     <li class="layui-nav-item">
       <a href="{{ url_for('user.setname')}}">
         <i class="layui-icon">&#xe620;</i>
-        更改昵称
+        Set Nickname
       </a>
     </li>
     <li class="layui-nav-item">
       <a href="{{ url_for('user.setemail')}}">
         <i class="layui-icon">&#xe620;</i>
-        更改邮箱
+        Set Email
       </a>
     </li>
     <li class="layui-nav-item layui-this">
       <a href="{{ url_for('user.setpass')}}">
         <i class="layui-icon">&#xe620;</i>
-        更改密码
+        Set Password
       </a>
     </li>
   </ul>
@@ -44,28 +44,28 @@
      <div class="fly-panel fly-panel-user" pad20>
       <div class="layui-tab layui-tab-brief" lay-filter="user">
       <ul class="layui-tab-title" id="LAY_mine">
-        <li class="layui-this" lay-id="info">我的邮箱</li>
+        <li class="layui-this" lay-id="info">My Email</li>
       </ul>
       <div class="layui-tab-content" style="padding: 20px 0;">
         <div class="layui-form layui-form-pane layui-tab-item layui-show">
           <form method="post">
              <div class="layui-form-item">
-                <label for="L_nowpass" class="layui-form-label">当前密码</label>
+                <label for="L_nowpass" class="layui-form-label">Current Password</label>
                 <div class="layui-input-inline">
                   <input type="password" id="nowpass" name="nowpass" required lay-verify="required" autocomplete="off" class="layui-input">
                 </div>
               </div>
 
           <div class="layui-form-item">
-                <label for="L_pass" class="layui-form-label">新密码</label>
+                <label for="L_pass" class="layui-form-label">New Password</label>
                 <div class="layui-input-inline">
                   <input type="password" id="password" name="password" required lay-verify="required" autocomplete="off" class="layui-input">
                 </div>
-                <div class="layui-form-mid layui-word-aux">6到16个字符</div>
+                <div class="layui-form-mid layui-word-aux">6-16 Characters</div>
               </div>
               
            <div class="layui-form-item">
-                <label for="L_repass" class="layui-form-label">确认密码</label>
+                <label for="L_repass" class="layui-form-label">Confirm Password</label>
                 <div class="layui-input-inline">
                   <input type="password" id="repassword" name="repassword" required lay-verify="required" autocomplete="off" class="layui-input">
                 </div>
@@ -73,7 +73,7 @@
 
             
             <div class="layui-form-item">
-              <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>确认修改</button>
+              <button class="layui-btn" key="set-mine" lay-filter="*" lay-submit>Confirm</button>
             </div>
             {% for message in get_flashed_messages() %}
                    <div class="warning" style="color:#FF5722;">{{ message }}</div>
@@ -86,7 +86,7 @@
 
     <br>
     <br>
-    <p style="text-align:center"><span style="color:#c2c2c2">ICS 社区 2018 &copy; Web 小组出品</span></p>
+    <p style="text-align:center"><span style="color:#c2c2c2">CatEatPad</span></p>
   </div>
 
 <script>
