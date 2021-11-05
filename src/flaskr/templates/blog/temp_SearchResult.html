@@ -4,7 +4,7 @@
 {% extends 'blog/temp_indextop.html' %}
 
 {% block header %}
-  <h1>{% block title %}贴吧首页{% endblock %}</h1>
+  <h1>{% block title %}Post Home Page{% endblock %}</h1>
 {% endblock %}
 
 {% block detail %}
@@ -16,7 +16,7 @@
 
       <div class="fly-panel" style="margin-bottom: 0;">
         <div class="fly-panel-title fly-filter">
-          <a href="" class="layui-this">相关用户</a>
+          <a href="" class="layui-this">Related User</a>
         </div>
 
         <ul class="fly-list"> 
@@ -35,7 +35,7 @@
 
       <div class="fly-panel" style="margin-bottom: 0;">
         <div class="fly-panel-title fly-filter">
-          <a href="" class="layui-this">相关帖子</a>
+          <a href="" class="layui-this">Related Post</a>
         </div>
 
         <ul class="fly-list"> 
@@ -53,19 +53,19 @@
               </a>
               <span>{{ post['created'].strftime('%Y-%m-%d') }}</span>
               
-              <span class="fly-list-kiss layui-hide-xs" style="color: #8a8a8a;"><i class="layui-icon" title="收藏数">&#xe600;</i>{{ post['num_collect'] }}</span>
-              <span class="fly-list-kiss layui-hide-xs" style="color: #8a8a8a;"><i class="layui-icon" title="点赞数">&#xe6c6;</i>{{ post['num_like'] }}</span>
-                <i class="iconfont icon-pinglun1" title="回复数"></i>{{ post['num_reply'] }}
+              <span class="fly-list-kiss layui-hide-xs" style="color: #8a8a8a;"><i class="layui-icon" title="Collects">&#xe600;</i>{{ post['num_collect'] }}</span>
+              <span class="fly-list-kiss layui-hide-xs" style="color: #8a8a8a;"><i class="layui-icon" title="Likes">&#xe6c6;</i>{{ post['num_like'] }}</span>
+                <i class="iconfont icon-pinglun1" title="Replies"></i>{{ post['num_reply'] }}
               </span>
             </div>
             <div class="fly-list-badge">
              
               {%if post['is_top']==1%}
-              <span class="layui-badge layui-bg-black">置顶</span>
+              <span class="layui-badge layui-bg-black">TopPost</span>
               {% endif %}
               
               {%if post['is_fine']%}
-              <span class="layui-badge layui-bg-red">精帖</span>
+              <span class="layui-badge layui-bg-red">Best Post</span>
               {% endif %}
             </div>
           </li>
