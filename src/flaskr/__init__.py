@@ -2,7 +2,7 @@
 # author: zyk
 import os
 import logging
-logging.basicConfig(filename='catEatPad_test.log', encoding='utf-8', level=logging.DEBUG)
+logging.basicConfig(filename='catEatPad_test.log', level=logging.DEBUG)
 from flask import Flask
 
 

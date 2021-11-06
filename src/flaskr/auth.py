@@ -1,24 +1,26 @@
 # -*- coding: utf-8 -*-
 # author: zyk
-# A Blueprint is a way to organize a group of related views and other code.
-# Rather than registering views and other code directly with an application,
-# they are registered with a blueprint.
+# responsible for login & logout & register
 
 
 import functools
+import datetime
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from playhouse.shortcuts import model_to_dict
 from .db import *
 from .util import *
 from io import BytesIO
 import logging
 
+# A Blueprint is a way to organize a group of related views and other code.
+# Rather than registering views and other code directly with an application,
+# they are registered with a blueprint.
 bp = Blueprint('auth', __name__, url_prefix='/auth')
+
 
 # TODO: now a window shows the error message, we want error message can show in the register page!
 def get_register_info(form):
@@ -47,7 +49,7 @@ def get_register_info(form):
         error = 'The maximum size of username is 40, your username is too long!'
     elif len(nickname) > 40:
         error = 'The maximum size of nickname is 40, your username is too long!'
-    elif len(user.select(user.id).where(user.username == username))>0 :
+    elif len(UserDB.select(UserDB.id).where(UserDB.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
     elif imagecode != session['imagecode']:
         error = 'Imagecode incorrect'
@@ -63,11 +65,12 @@ def register():
         logging.info(f"new user info: username: {username}, nickname: {nickname}, error: {error}")
 
         if error is None:
-            user.insert({
-                user.username: username,
-                user.password: password,
-                user.nickname: nickname,
-                user.email: email
+            UserDB.insert({
+                UserDB.username: username,
+                UserDB.password: password,
+                UserDB.nickname: nickname,
+                UserDB.email: email,
+                UserDB.created: datetime.datetime.now()
             }).execute()
             return redirect(url_for('auth.login'))
 
@@ -81,29 +84,29 @@ def get_login_info(form):
     password = form['password']
     imagecode = form['imagecode']
     error = None
-    User = user.select().where(user.username == username)
-    if len(User) == 0:
+    user_info = UserDB.select().where(UserDB.username == username)
+    if len(user_info) == 0:
         error = "Username Does Not Exist"
-        User = None
+        user_info = None
     else:
-        User = User.get()
-        if not check_password_hash(User.password, password):
+        user_info = UserDB.get()
+        if not check_password_hash(user_info.password, password):
             error = "Password Incorrect"
         elif imagecode != session['imagecode']:
             error = "Imagecode Incorrect"
 
-    return User, error
+    return user_info, error
 
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
         # logging.info(request.form)
-        user, error = get_login_info(request.form)
+        user_info, error = get_login_info(request.form)
 
         if error is None:
             session.clear()
-            session['user_id'] = user.id
+            session['user_id'] = user_info.id
             return redirect(url_for('index'))
 
         flash(error)    # stores messages that can be retrieved when rendering the template.
@@ -118,7 +121,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = model_to_dict(user.select().where(user.id == user_id).get())
+        g.user = model_to_dict(UserDB.select().where(UserDB.id == user_id).get())
 
 
 @bp.route('/logout')
@@ -136,6 +139,7 @@ def login_required(view):
         return view(**kwargs)
 
     return wrapped_view
+
 
 @bp.route('/code')
 def get_code():
