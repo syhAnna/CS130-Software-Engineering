@@ -1,6 +1,8 @@
 # -*- coding: utf-8 -*-
 # author: zyk
 import os
+import logging
+logging.basicConfig(filename='catEatPad_test.log', level=logging.DEBUG)
 from flask import Flask
 
 

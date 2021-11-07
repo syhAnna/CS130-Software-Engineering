@@ -2,7 +2,7 @@
 <html>
 <head>
   <meta charset="utf-8">
-<title>{% block title %}{% endblock %} - 论坛</title>
+<title>{% block title %}{% endblock %} - Discussion Board</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
   <link rel="stylesheet" href="{{ url_for('static', filename='res/layui/css/layui.css') }}">
   <link rel="stylesheet" href="{{ url_for('static', filename='res/css/global.css') }}">
@@ -17,29 +17,29 @@
     </a>
     <ul class="layui-nav fly-nav layui-hide-xs">
       <li class="layui-nav-item layui-this">
-        <a href="https://www.pku.edu.cn/"><i class="iconfont icon-jiaoliu"></i>北京大学</a>
+        <a href="https://www.ucla.edu/"><i class="iconfont icon-jiaoliu"></i>University of California, Los Angeles</a>
       </li>
       <li class="layui-nav-item">
-        <a href="http://eecs.pku.edu.cn/"><i class="iconfont icon-iconmingxinganli"></i>信息科学与技术学院</a>
+        <a href="https://www.cs.ucla.edu/"><i class="iconfont icon-iconmingxinganli"></i>UCLA Computer Science Department</a>
       </li>
       <li class="layui-nav-item">
-        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>模板来源</a>
+        <a href="http://www.layui.com/" target="_blank"><i class="iconfont icon-ui"></i>Template Source</a>
       </li>
     </ul>
     
     <ul class="layui-nav fly-nav-user">
        {% if g.user %}
        <li class="layui-nav-item">
-        <a class="fly-nav-avatar" href="{{ url_for('user.home', id=g.user['id']) }}"><!--个人主页-->
+        <a class="fly-nav-avatar" href="{{ url_for('user.home', user_id=g.user['id']) }}"><!--User Main Page-->
           <cite class="layui-hide-xs">{{ g.user['nickname'] }}</cite>
           <img src="https://tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg">
         </a>
       </li>
       <li class="layui-nav-item">
-        <a href="{{ url_for('user.setname') }}">我的设置</a><!--我的设置-->
+        <a href="{{ url_for('user.setname') }}">My Settings</a>
       </li>
       <li class="layui-nav-item">
-        <a href="{{ url_for('auth.logout') }}">退出</a>
+        <a href="{{ url_for('auth.logout') }}">Log Out</a>
       </li>
        {% else %}
       <!-- 未登入的状态 -->
@@ -47,10 +47,10 @@
         <a class="iconfont icon-touxiang layui-hide-xs" href="{{ url_for('auth.login') }}"></a>
       </li>
       <li class="layui-nav-item">
-        <a href="{{ url_for('auth.login') }}">登入</a>
+        <a href="{{ url_for('auth.login') }}">Log In</a>
       </li>
       <li class="layui-nav-item">
-        <a href="{{ url_for('auth.register') }}">注册</a>
+        <a href="{{ url_for('auth.register') }}">Register</a>
       </li>
       {% endif %}
     </ul>

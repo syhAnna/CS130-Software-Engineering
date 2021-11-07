@@ -1,65 +1,35 @@
 # -*- coding: utf-8 -*-
 # author: zyk
-# A Blueprint is a way to organize a group of related views and other code.
-# Rather than registering views and other code directly with an application,
-# they are registered with a blueprint.
+# responsible for login & logout & register
 
 
 import functools
+import datetime
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response
 )
 
 from werkzeug.security import check_password_hash, generate_password_hash
-from playhouse.shortcuts import model_to_dict
 from .db import *
-from PIL import Image, ImageFont, ImageDraw, ImageFilter
-import random
+from .util import *
 from io import BytesIO
-from pprint import pprint
+import logging
 
+# A Blueprint is a way to organize a group of related views and other code.
+# Rather than registering views and other code directly with an application,
+# they are registered with a blueprint.
 bp = Blueprint('auth', __name__, url_prefix='/auth')
 
 
-def validate_picture():
-    total = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ012345789'
-    # 图片大小130 x 50
-    width = 150
-    heighth = 40
-    # 先生成一个新图片对象
-    im = Image.new('RGB',(width, heighth), 'White')
-    # 设置字体
-    font = ImageFont.truetype("C:\Windows\Fonts\Arial.ttf", 28)
-    # 创建draw对象
-    draw = ImageDraw.Draw(im)
-    str = ''
-    # 输出每一个文字
-    for item in range(5):
-        text = random.choice(total)
-        str += text
-        draw.text((13+random.randint(4,7)+20*item,random.randint(3,7)), text=text, fill='Black', font=font)
-
-    # 划几根干扰线
-    for num in range(8):
-        x1 = random.randint(0, width/2)
-        y1 = random.randint(0, heighth/2)
-        x2 = random.randint(0, width)
-        y2 = random.randint(heighth/2, heighth)
-        draw.line(((x1, y1),(x2,y2)), fill='black', width=1)
-
-    # 模糊下,加个帅帅的滤镜～
-    im = im.filter(ImageFilter.FIND_EDGES)
-    return im, str
-
-
+# TODO: now a window shows the error message, we want error message can show in the register page!
 def get_register_info(form):
-    username = request.form['username']
-    password = request.form['password']
-    nickname = request.form['nickname']
-    repassword = request.form['repassword']
-    email = request.form['email']
-    imagecode = request.form['imagecode']
+    username = form['username']
+    password = form['password']
+    nickname = form['nickname']
+    repassword = form['repassword']
+    email = form['email']
+    imagecode = form['imagecode']
     error = None
     if not nickname:
         nickname = username
@@ -79,10 +49,10 @@ def get_register_info(form):
         error = 'The maximum size of username is 40, your username is too long!'
     elif len(nickname) > 40:
         error = 'The maximum size of nickname is 40, your username is too long!'
-    elif len(user.select(user.id).where(user.username == username))>0 :
+    elif len(UserDB.select(UserDB.id).where(UserDB.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
     elif imagecode != session['imagecode']:
-        error = '验证码错误'
+        error = 'Imagecode incorrect'
 
     return username, generate_password_hash(password), nickname, email, error
 
@@ -90,18 +60,17 @@ def get_register_info(form):
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        print(request.form)
+        logging.info(request.form)
         username, password, nickname, email, error = get_register_info(request.form)
-        pprint(username)
-        pprint(nickname)
-        pprint(error)
+        logging.info(f"new user info: username: {username}, nickname: {nickname}, error: {error}")
 
         if error is None:
-            user.insert({
-                user.username: username,
-                user.password: password,
-                user.nickname: nickname,
-                user.email: email
+            UserDB.insert({
+                UserDB.username: username,
+                UserDB.password: password,
+                UserDB.nickname: nickname,
+                UserDB.email: email,
+                UserDB.created: datetime.datetime.now()
             }).execute()
             return redirect(url_for('auth.login'))
 
@@ -115,29 +84,29 @@ def get_login_info(form):
     password = form['password']
     imagecode = form['imagecode']
     error = None
-    User = user.select().where(user.username == username)
-    if len(User) == 0:
-        error = "用户名不存在"
-        User = None
+    user_info = UserDB.select().where(UserDB.username == username)
+    if len(user_info) == 0:
+        error = "Username Does Not Exist"
+        user_info = None
     else:
-        User = User.get()
-        if not check_password_hash(User.password, password):
-            error = "密码不正确"
+        user_info = UserDB.get()
+        if not check_password_hash(user_info.password, password):
+            error = "Password Incorrect"
         elif imagecode != session['imagecode']:
-            error = "验证码错误"
+            error = "Imagecode Incorrect"
 
-    return User, error
+    return user_info, error
 
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
-        # print(request.form)
-        User, error = get_login_info(request.form)
+        # logging.info(request.form)
+        user_info, error = get_login_info(request.form)
 
         if error is None:
             session.clear()
-            session['user_id'] = User.id
+            session['user_id'] = user_info.id
             return redirect(url_for('index'))
 
         flash(error)    # stores messages that can be retrieved when rendering the template.
@@ -152,7 +121,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = model_to_dict(user.select().where(user.id == user_id).get())
+        g.user = model_to_dict(UserDB.select().where(UserDB.id == user_id).get())
 
 
 @bp.route('/logout')
@@ -171,16 +140,17 @@ def login_required(view):
 
     return wrapped_view
 
+
 @bp.route('/code')
 def get_code():
-    image, str = validate_picture()
-    # 将验证码图片以二进制形式写入在内存中，防止将图片都放在文件夹中，占用大量磁盘
+    # Write binary format image into the memory, release the space in disk
+    image, str = generate_validate_picture()
     buf = BytesIO()
     image.save(buf, 'jpeg')
     buf_str = buf.getvalue()
-    # 把二进制作为response发回前端，并设置首部字段
+    # send binary image as respond to the frontend and set the header
     response = make_response(buf_str)
     response.headers['Content-Type'] = 'image/gif'
-    # 将验证码字符串储存在session中
+    # save image code as string into the session
     session['imagecode'] = str
     return response

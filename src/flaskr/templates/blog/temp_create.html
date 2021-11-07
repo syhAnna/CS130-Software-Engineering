@@ -1,7 +1,7 @@
 {% extends 'blog/temp_indextop.html' %}
 
 {% block header %}
-  <h1>{% block title %}发表帖子{% endblock %}</h1>
+  <h1>{% block title %}Publish Post{% endblock %}</h1>
 {% endblock %}
 
 {% block all_content %}
@@ -12,13 +12,13 @@
     <div class="layui-form layui-form-pane">
       <div class="layui-tab layui-tab-brief" lay-filter="user">
         <ul class="layui-tab-title">
-          <li class="layui-this">发表新帖<!-- 编辑帖子 --></li>
+          <li class="layui-this">Publish New Post</li>
         </ul>
         <div class="layui-form layui-tab-content" id="LAY_ucm" style="padding: 20px 0;">
           <div class="layui-tab-item layui-show">
             <form action="" method="post" enctype="multipart/form-data">
                 <div class="layui-col-md9">
-                  <label for="L_title" class="layui-form-label">标题</label>
+                  <label for="L_title" class="layui-form-label">Title</label>
                   <div class="layui-input-block">
                     <input type="text" id="title" name="title" required lay-verify="required" autocomplete="off" class="layui-input" value="{{ request.form['title'] }}" required>
                   </div>
@@ -39,13 +39,13 @@
                   </div>
                 </div>
                 <div class="layui-col-md3">
-                  <label class="layui-form-label" for="L_version">版本号</label>
+                  <label class="layui-form-label" for="L_version">Version</label>
                   <div class="layui-input-block">
                     <input type="text" id="L_version" value="" name="version" autocomplete="off" class="layui-input">
                   </div>
                 </div>
                 <div class="layui-col-md6">
-                  <label class="layui-form-label" for="L_browser">浏览器</label>
+                  <label class="layui-form-label" for="L_browser">Browser</label>
                   <div class="layui-input-block">
                     <input type="text" id="L_browser"  value="" name="browser" placeholder="浏览器名称及版本，如：IE 11" autocomplete="off" class="layui-input">
                   </div>
@@ -58,7 +58,7 @@
               </div>
 
               <div class="layui-form-item">
-                <button class="layui-btn" lay-filter="*" lay-submit>立即发布</button>
+                <button class="layui-btn" lay-filter="*" lay-submit>Publish</button>
                 <input id="file-picker" type="file" name="file" multiple>
                 <div id="msg"></div>
               </div>
@@ -68,7 +68,7 @@
       </div>
     </div>
     {% else %}
-    <div class="fly-none">没有权限</div>
+    <div class="fly-none">No Authority</div>
     {% endif %}
   </div>
 </div>
@@ -82,7 +82,7 @@ layui.use(['layer', 'form', 'layedit'], function () {
                     tool:['strong','underline','del','|','link','face']
           });
                  var form = layui.form;
-                //监听提交
+                //Track Submission
                 form.verify({
                     article_desc: function(value){
                         layedit.sync(index);

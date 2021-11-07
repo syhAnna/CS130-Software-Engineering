@@ -1,2 +1,4 @@
 *dbConfig
 *pyc
+*dbConfig.json
+*.log

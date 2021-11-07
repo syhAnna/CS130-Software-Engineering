@@ -1,7 +1,7 @@
 {% extends 'new_index.html' %}
 
 {% block header %}
-  <h1>{% block title %}用户管理{% endblock %}</h1>
+  <h1>{% block title %}User Management{% endblock %}</h1>
 {% endblock %}
 
 {% block content %}
@@ -9,9 +9,9 @@
     <canvas id="myCanvas" width="150px" height="500px" horizontalScrollPolicy="off"></canvas>
   <div style="position:absolute;left:90px;top:140px" class="layui-container">
   <form action="" method="post" enctype="multipart/form-data">
-    <input type="text" id="title" name="title" required  lay-verify="required" placeholder="请输入用户名称" autocomplete="off" class="layui-input">
+    <input type="text" id="title" name="title" required  lay-verify="required" placeholder="Please Enter Username" autocomplete="off" class="layui-input">
      <div class="fly-column-right layui-hide-xs">
-      <button type="submit" class="layui-btn" lay-filter="*" lay-submit>搜索用户</button>
+      <button type="submit" class="layui-btn" lay-filter="*" lay-submit>Search User</button>
  </div>
   </form>
   </div>
@@ -20,13 +20,13 @@
 <table class="layui-table">
   <thead>
     <tr>
-      <th  style="text-align:center">用户ID</th>
-      <th style="text-align:center">用户昵称</th>
-      <th  style="text-align:center">注册时间</th>
-      <th  style="text-align:center">邮箱</th>
-        <th  style="text-align:center">禁言状态</th>
-        <th  style="text-align:center">禁言操作</th>
-      <th  style="text-align:center">删除操作</th>
+      <th  style="text-align:center">User ID</th>
+      <th style="text-align:center">User Nickname</th>
+      <th  style="text-align:center">Register Time</th>
+      <th  style="text-align:center">Email</th>
+        <th  style="text-align:center">Banned State</th>
+        <th  style="text-align:center">Banned Operation</th>
+      <th  style="text-align:center">Delete Operation</th>
     </tr>
   </thead>
   {% for post in posts %}
@@ -37,23 +37,23 @@
       <td style="text-align:center">{{ post['created'] }}</td>
       <td style="text-align:center">{{ post['email'] }}</td>
         {% if post['is_block'] == 1 %}
-            <td style="text-align:center">已被禁言</td>
+            <td style="text-align:center">Has been Banned</td>
             <td style="text-align:center">
             <form action="{{ url_for('admin.BlockMember', id=[post['id'],0]) }}" method="post">
-                <button class="layui-btn layui-btn-normal layui-btn-xs"  lay-filter="*" lay-submit type="submit">解除禁言</button>
+                <button class="layui-btn layui-btn-normal layui-btn-xs"  lay-filter="*" lay-submit type="submit">Remove Banned</button>
             </form>
             </td>
         {% else %}
-            <td style="text-align:center">未被禁言</td>
+            <td style="text-align:center">Not Been Banned</td>
             <td style="text-align:center">
             <form action="{{ url_for('admin.BlockMember', id=[post['id'],1]) }}" method="post">
-                <button class="layui-btn layui-btn-warm layui-btn-xs"  lay-filter="*" lay-submit type="submit">禁言</button>
+                <button class="layui-btn layui-btn-warm layui-btn-xs"  lay-filter="*" lay-submit type="submit">Banned</button>
             </form>
             </td>
         {% endif %}
       <td style="text-align:center">
           <form action="{{ url_for('admin.DeleteMember', id=post['id']) }}" method="post">
-              <button class="layui-btn layui-btn-danger layui-btn-xs"  lay-filter="*" lay-submit type="submit">删除用户</button>
+              <button class="layui-btn layui-btn-danger layui-btn-xs"  lay-filter="*" lay-submit type="submit">Delete User</button>
           </form>
         <!--<button class="layui-btn layui-btn-sm layui-btn-danger" href="{{ url_for('admin.DeleteMember', id=post['id']) }}">
         <i class="layui-icon">&#xe640;</i>
@@ -65,7 +65,7 @@
 </table>
 
     <br>
-    <p style="text-align:center"><span style="color:#c2c2c2">Admin管理系统 2018 &copy; Web 小组出品</span></p>
+    <p style="text-align:center"><span style="color:#c2c2c2">CatEatPad</span></p>
   </div>
 </div>
 

@@ -9,8 +9,20 @@
 ##### run
 - **run `. venv/bin/activate` first!!!**
 - theoretically every library we need should be contained by `venv`, if you want to pip install something,  please remember to run `. venv/bin/activate` first
-- modify `passwd` in `src/flaskr/db.py`  
+- add `dbConfig.json` under `src/flaskr/` 
+```json
+{
+    "host": "127.0.0.1",
+    "user": "root",
+    "passwd": "YourPassWord",
+    "database": "CatEatPad"
+}
+```
 ```bash
 cd src
 bash start.sh
 ```
+
+#### Flask
+- [Learn Flask for Python(youtube)](https://www.youtube.com/watch?v=Z1RJmh_OqeA)
+- 

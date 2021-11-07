@@ -2,8 +2,7 @@ from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
 from werkzeug.security import check_password_hash, generate_password_hash
-import os
-import subprocess
+import logging
 
 from .auth import login_required
 from pprint import pprint
@@ -14,18 +13,18 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 def get_home_info(id):
-    tmp_list = model_to_dict(user.select(user.username, user.nickname, user.email, user.created).where(user.id == id).get())
+    tmp_list = model_to_dict(UserDB.select(UserDB.username, UserDB.nickname, UserDB.email, UserDB.created).where(UserDB.id == id).get())
 
     posts = []
-    allposts = post.select(post.id, post.title, post.created, post.author_id).where(post.author_id == id).order_by(post.created.desc())
+    allposts = PostDB.select(PostDB.id, PostDB.title, PostDB.created, PostDB.author_id).where(PostDB.author_id == id).order_by(PostDB.created.desc())
     for apost in allposts:
         posts.append(model_to_dict(apost))
 
     return_collects = []
-    allcollects = collects.select(collects.author_id, collects.post_id).where(collects.author_id == id)
+    allcollects = CollectsDB.select(CollectsDB.author_id, CollectsDB.post_id).where(CollectsDB.author_id == id)
     for acollect in allcollects:
         dctcollect = model_to_dict(acollect)
-        apost = model_to_dict(post.select(post.title, post.created).where(post.id == dctcollect['post_id']).get())
+        apost = model_to_dict(PostDB.select(PostDB.title, PostDB.created).where(PostDB.id == dctcollect['post_id']).get())
         dctcollect['title'] = apost['title']
         dctcollect['created'] = apost['created']
         dctcollect['id'] = dctcollect['post_id']
@@ -47,9 +46,10 @@ def get_home_info(id):
     return user_info
 
 
-@bp.route('/home/<string:id>')
-def home(id):
-    user_info = get_home_info(id)
+@bp.route('/home/<string:user_id>')
+def home(user_id):
+    user_info = get_home_info(user_id)
+    logging.info(f"user info for {user_id}: {user_info}")
 
     return render_template('user/temp_home.html', user=user_info)
 
@@ -66,7 +66,7 @@ def setname():
         if error is not None:
             flash(error)
         else:
-            t = user.update(nickname=nickname).where(user.id == g.user['id'])
+            t = UserDB.update(nickname=nickname).where(UserDB.id == g.user['id'])
             t.execute()
 
             return redirect(url_for('blog.index'))
@@ -86,7 +86,7 @@ def setemail():
         if error is not None:
             flash(error)
         else:
-            t = user.update(email=email).where(user.id == g.user['id'])
+            t = UserDB.update(email=email).where(UserDB.id == g.user['id'])
             t.execute()
 
             return redirect(url_for('blog.index'))
@@ -102,7 +102,7 @@ def setpass():
         repassword = request.form['repassword']
         error = None
 
-        real_password = model_to_dict(user.select(user.password).where(user.id == g.user['id']).get())['password']
+        real_password = model_to_dict(UserDB.select(UserDB.password).where(UserDB.id == g.user['id']).get())['password']
 
         if not (check_password_hash(real_password, nowpass)):
             error = 'Wrong password!'
@@ -119,7 +119,7 @@ def setpass():
         if error is not None:
             flash(error)
         else:
-            t = user.update(password=generate_password_hash(password)).where(user.id == g.user['id'])
+            t = UserDB.update(password=generate_password_hash(password)).where(UserDB.id == g.user['id'])
             t.execute()
 
             return redirect(url_for('blog.index'))
