@@ -1,3 +1,4 @@
+# user_profile page
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
@@ -46,6 +47,7 @@ def get_home_info(id):
     return user_info
 
 
+""" get user_info """
 @bp.route('/home/<string:user_id>')
 def home(user_id):
     user_info = get_home_info(user_id)
@@ -54,6 +56,10 @@ def home(user_id):
     return render_template('user/temp_home.html', user=user_info)
 
 
+""" processing user_info modification request 
+TODO[yikai, yuhan]: using one function to deal with different requests
+like setUserInfo(param), setPetInfo(param)
+"""
 @bp.route('/setname', methods=('GET', 'POST'))
 def setname():
     if request.method == 'POST':

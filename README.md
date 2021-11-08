@@ -26,3 +26,6 @@ bash start.sh
 #### Flask
 - [Learn Flask for Python(youtube)](https://www.youtube.com/watch?v=Z1RJmh_OqeA)
 - 
+
+##### test
+- run `pytest` in `src` to test. more more details, see [testing in Flask](https://flask.palletsprojects.com/en/2.0.x/testing/)

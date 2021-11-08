@@ -1,3 +1,6 @@
+# main page
+# 1. show posts in the nearby location
+# 2. show 
 from flask import (
     Blueprint, flash, g, session, redirect, render_template, request, url_for, current_app,send_from_directory
 )
