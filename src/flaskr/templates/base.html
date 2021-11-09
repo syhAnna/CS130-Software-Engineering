@@ -34,7 +34,7 @@
   
     <section class="content">
       {% for message in get_flashed_messages() %}
-        <div class="text-center bg-light rounded m-3 p-3"><strong class="text-danger">{{ message }}</strong></div>
+        <div class="text-center alert alert-danger rounded m-3 p-3"><strong class="text-danger">{{ message }}</strong></div>
       {% endfor %}
       {% block content %}{% endblock %}
     </section>
