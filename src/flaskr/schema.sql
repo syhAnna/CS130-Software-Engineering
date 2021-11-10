@@ -1,6 +1,5 @@
 DROP TABLE IF EXISTS reply;
 DROP TABLE IF EXISTS collects;
-DROP TABLE IF EXISTS likes;
 DROP TABLE IF EXISTS post_file;
 DROP TABLE IF EXISTS post;
 --DROP TABLE IF EXISTS user;
@@ -20,7 +19,6 @@ CREATE TABLE post (
   author_id INT NOT NULL,
   num_view INT NOT NULL DEFAULT 0,
   num_reply INT NOT NULL DEFAULT 0,
-  num_like INT NOT NULL DEFAULT 0,
   num_collect INT NOT NULL DEFAULT 0,
   hot DOUBLE NOT NULL DEFAULT 0,
   created TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -58,10 +56,3 @@ CREATE TABLE collects (
   FOREIGN KEY (post_id) REFERENCES post (id)
 );
 
-CREATE TABLE likes (
-  id INT AUTO_INCREMENT PRIMARY KEY,
-  author_id INT NOT NULL,
-  post_id INT NOT NULL,
-  FOREIGN KEY (author_id) REFERENCES user (id),
-  FOREIGN KEY (post_id) REFERENCES post (id)
-);

@@ -22,19 +22,6 @@
           <!--Collect and Likes-->
         {% if g.user %}
           <div class="layui-btn-container">
-            {% if post['is_top']==1 %}
-              <span class="layui-badge layui-bg-black">Top Post</span>
-            {% endif %}
-            {% if is_collect %}
-            <a href="{{ url_for('blog.UNCOLLECT', id=post['id']) }}"  class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">Cancel Collect</a>
-            {% else %}
-            <a href="{{ url_for('blog.COLLECT', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius">Collect</a>
-            {% endif %}
-            {% if is_like %}
-            <a href="{{ url_for('blog.UNLIKE', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius layui-btn-danger">Cancel Like</a>
-            {% else %}
-            <a href="{{ url_for('blog.LIKE', id=post['id']) }}" class="layui-btn layui-btn-xs layui-btn-radius">Like</a>
-            {% endif %}
           </div>
         {% endif %}
           

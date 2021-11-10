@@ -26,10 +26,8 @@ def index():
         posts = title_search(ST)
         return redirect(url_for('blog.SEARCH_TITLE', ST=ST))
 
-    posts, hots = get_index_info()
-    session['hots'] = hots
-
-    return render_template('blog/temp_index.html', posts=posts, hots=hots)
+    posts = get_index_info()
+    return render_template('blog/temp_index.html', posts=posts)
 
 
 # create a new post
@@ -50,7 +48,7 @@ def create():
         if error is not None:
             flash(error)
         else:
-            t = PostDB.insert(title=title, body=body, author_id=g.user['id'], is_top=0, is_fine=0, created=datetime.datetime.now())
+            t = PostDB.insert(title=title, body=body, author_id=g.user['id'], created=datetime.datetime.now())
             post_id = t.execute()
             print(post_id)
 
@@ -100,15 +98,8 @@ def ViewPost(id):
 
     t = PostDB.update(num_view=num_view).where(PostDB.id==id)
     t.execute()
-    is_like = None
-    is_collect = None
-    if g.user:
-        is_like = check_is_like(g.user['id'], id)
-        is_collect = check_is_collect(g.user['id'], id)
-        print("is_like = ", is_like)
-        print("is_collect = ", is_collect)
 
-    return render_template('blog/temp_ViewPost.html', post=apost, is_collect=is_collect, is_like=is_like, hots=session['hots'])
+    return render_template('blog/temp_ViewPost.html', post=apost)
 
 
 def CHECK_DOWNLOADFILE(post_file_id, filename):
@@ -173,42 +164,6 @@ def SEARCH_USER(ST):
     users = user_search(ST)
 
     return json.dumps(users, ensure_ascii=False)
-
-
-# like a post
-@bp.route('/LIKE/<int:id>', methods=('GET', 'POST'))
-@login_required
-def LIKE(id):
-    ADD_LIKE(id)
-
-    return redirect(url_for('blog.ViewPost', id=id))
-
-
-# collect a post
-@bp.route('/COLLECT/<int:id>', methods=('GET', 'POST'))
-@login_required
-def COLLECT(id):
-    ADD_COLLECT(id)
-
-    return redirect(url_for('blog.ViewPost', id=id))
-
-
-# collect a post
-@bp.route('/UNCOLLECT/<int:id>', methods=('GET', 'POST'))
-@login_required
-def UNCOLLECT(id):
-    ADD_UNCOLLECT(id)
-
-    return redirect(url_for('blog.ViewPost', id=id))
-
-
-# unlike a post
-@bp.route('/UNLIKE/<int:id>', methods=('GET', 'POST'))
-@login_required
-def UNLIKE(id):
-    ADD_UNLIKE(id)
-
-    return redirect(url_for('blog.ViewPost', id=id))
 
 
 ''' # update a post

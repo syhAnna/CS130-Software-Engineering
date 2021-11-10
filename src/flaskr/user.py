@@ -14,7 +14,7 @@ bp = Blueprint('user', __name__, url_prefix='/user')
 
 
 def get_home_info(id):
-    tmp_list = model_to_dict(UserDB.select(UserDB.username, UserDB.nickname, UserDB.email, UserDB.created).where(UserDB.id == id).get())
+    tmp_list = model_to_dict(UserDB.select(UserDB.username, UserDB.email, UserDB.created).where(UserDB.id == id).get())
 
     posts = []
     allposts = PostDB.select(PostDB.id, PostDB.title, PostDB.created, PostDB.author_id).where(PostDB.author_id == id).order_by(PostDB.created.desc())
@@ -22,26 +22,11 @@ def get_home_info(id):
         posts.append(model_to_dict(apost))
 
     return_collects = []
-    allcollects = CollectsDB.select(CollectsDB.author_id, CollectsDB.post_id).where(CollectsDB.author_id == id)
-    for acollect in allcollects:
-        dctcollect = model_to_dict(acollect)
-        apost = model_to_dict(PostDB.select(PostDB.title, PostDB.created).where(PostDB.id == dctcollect['post_id']).get())
-        dctcollect['title'] = apost['title']
-        dctcollect['created'] = apost['created']
-        dctcollect['id'] = dctcollect['post_id']
-
-        return_collects.append(dctcollect)
-
-    return_collects = return_collects[::-1]
-    pprint(return_collects)
-
     user_info = {
         'username': tmp_list['username'],
-        'nickname': tmp_list['nickname'],
         'email': tmp_list['email'],
         'created': tmp_list['created'],
-        'posts': posts,
-        'markposts': return_collects
+        'posts': posts
         }
 
     return user_info
@@ -60,26 +45,6 @@ def home(user_id):
 TODO[yikai, yuhan]: using one function to deal with different requests
 like setUserInfo(param), setPetInfo(param)
 """
-@bp.route('/setname', methods=('GET', 'POST'))
-def setname():
-    if request.method == 'POST':
-        nickname = request.form['nickname']
-        error = None
-
-        if not nickname:
-            error = 'Nickname is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            t = UserDB.update(nickname=nickname).where(UserDB.id == g.user['id'])
-            t.execute()
-
-            return redirect(url_for('blog.index'))
-
-    return render_template('user/temp_setnickname.html')
-
-
 @bp.route('/setemail', methods=('GET', 'POST'))
 def setemail():
     if request.method == 'POST':
