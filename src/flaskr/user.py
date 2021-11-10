@@ -9,36 +9,16 @@ import logging
 from .auth import login_required
 from pprint import pprint
 from .db import *
+from .info import *
 from playhouse.shortcuts import model_to_dict
 
 bp = Blueprint('user', __name__, url_prefix='/user')
 
-
-def get_home_info(id):
-    tmp_list = model_to_dict(UserDB.select(UserDB.username, UserDB.email, UserDB.created).where(UserDB.id == id).get())
-
-    posts = []
-    allposts = PostDB.select(PostDB.id, PostDB.title, PostDB.created, PostDB.author_id).where(PostDB.author_id == id).order_by(PostDB.created.desc())
-    for apost in allposts:
-        posts.append(model_to_dict(apost))
-
-    return_collects = []
-    user_info = {
-        'username': tmp_list['username'],
-        'email': tmp_list['email'],
-        'created': tmp_list['created'],
-        'posts': posts
-        }
-
-    return user_info
-
-
 """ get user_info """
 @bp.route('/home/<string:user_id>')
 def home(user_id):
-    user_info = get_home_info(user_id)
+    user_info = UserInfo.get_user_info_by_uid(user_id)
     logging.info(f"user info for {user_id}: {user_info}")
-
     return render_template('user/home.html', user=user_info)
 
 

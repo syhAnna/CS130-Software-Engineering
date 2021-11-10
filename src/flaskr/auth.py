@@ -4,15 +4,15 @@
 
 
 import functools
-import datetime
 
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, session, url_for, make_response
 )
 
-from werkzeug.security import check_password_hash, generate_password_hash
-from .db import *
+from werkzeug.security import generate_password_hash
+from .info import *
 from .util import *
+from .db import *
 from io import BytesIO
 import logging
 
@@ -59,52 +59,22 @@ def register():
         logging.info(f"new user info: username: {username}, error: {error}")
 
         if error is None:
-            UserDB.insert({
-                UserDB.username: username,
-                UserDB.password: password,
-                UserDB.email: email,
-                UserDB.created: datetime.datetime.now()
-            }).execute()
+            UserInfo.add_new_user(username=username, password=password, email=email)
             return redirect(url_for('auth.login'))
-
         flash(error)
 
     return render_template('auth/register.html')
-
-
-def get_login_info(form):
-    username = form['username']
-    password = form['password']
-    imagecode = form['imagecode']
-    error = None
-    user_info = UserDB.select().where(UserDB.username == username)
-    if len(user_info) == 0:
-        error = "Error: Username Does Not Exist"
-        user_info = None
-    else:
-        user_info = user_info.get()
-        logging.info(f"input password {password}, password in db {user_info.__dict__}")
-        if not check_password_hash(user_info.password, password):
-            error = "Error: Password Incorrect"
-        elif imagecode != session['imagecode']:
-            error = "Error: Imagecode Incorrect"
-
-    return user_info, error
-
 
 @bp.route('/login', methods=('GET', 'POST'))
 def login():
     if request.method == 'POST':
         # logging.info(request.form)
-        user_info, error = get_login_info(request.form)
-
+        user_info, error = UserInfo.get_login_info(request.form, correct_imagecode=session['imagecode'])
         if error is None:
             session.clear()
             session['user_id'] = user_info.id
             return redirect(url_for('index'))
-
         flash(error)    # stores messages that can be retrieved when rendering the template.
-
     return render_template('auth/login.html')
 
 
