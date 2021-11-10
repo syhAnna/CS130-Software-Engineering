@@ -69,7 +69,7 @@ def register():
 
         flash(error)
 
-    return render_template('auth/temp_reg.html')
+    return render_template('auth/register.html')
 
 
 def get_login_info(form):
@@ -105,7 +105,7 @@ def login():
 
         flash(error)    # stores messages that can be retrieved when rendering the template.
 
-    return render_template('auth/temp_login.html')
+    return render_template('auth/login.html')
 
 
 @bp.before_app_request

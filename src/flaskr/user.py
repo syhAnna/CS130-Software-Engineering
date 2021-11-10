@@ -39,7 +39,7 @@ def home(user_id):
     user_info = get_home_info(user_id)
     logging.info(f"user info for {user_id}: {user_info}")
 
-    return render_template('user/temp_home.html', user=user_info)
+    return render_template('user/home.html', user=user_info)
 
 
 """ processing user_info modification request 
@@ -63,7 +63,7 @@ def setemail():
 
             return redirect(url_for('blog.index'))
 
-    return render_template('user/temp_setemail.html')
+    return render_template('user/easy_set.html')
 
 
 @bp.route('/setpass', methods=('GET', 'POST'))
@@ -96,7 +96,7 @@ def setpass():
 
             return redirect(url_for('blog.index'))
 
-    return render_template('user/temp_setpass.html')
+    return render_template('user/easy_set.html')
 
 
 # [TODO]: set user picture for user
@@ -105,5 +105,5 @@ def setpic():
     if request.method == 'POST':
         pass
 
-    return render_template('user/temp_setemail.html')
+    return render_template('user/easy_set.html')
 

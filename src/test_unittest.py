@@ -61,7 +61,7 @@ def test_login():
     }
     check_post(url="/auth/login", 
                 request=login_request,
-                expected_string="Enter the Name of the Post to Search")
+                expected_string=["Type", "City", "Start", "End", "Search"])
 
 
 def test_user_profile():
