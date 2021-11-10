@@ -6,22 +6,27 @@
 
 <div class="bg-light m-3 rounded text-center">
 
-      <div>
-        <img src="https://github.com/mdo.png" alt="mdo" width="128" height="128" class="rounded-circle mt-3 mb-1">
-        <h5>{{ user['nickname'] }}</h5>
-        <p>{% if user['email'] %}
-            {{ user['email'] }}
-            {% endif %}
-        </p>
-        <p><small class="text-muted"><i class="far fa-calendar-plus fa-1x"></i> <span>{{ user['created'].strftime('%Y-%m-%d') }} Add</span></small></p>
-        <a href="#" class="btn btn-dark m-1 btn-sm">Change Profile</a>
+      <div class="container-fluid p-3">
+        <div class="row w-75 mx-auto">
+          <div class="col text-center pt-4">
+            <img src="https://static01.nyt.com/images/2021/09/14/science/07CAT-STRIPES/07CAT-STRIPES-mediumSquareAt3X-v2.jpg" width="128" height="128" class="rounded-circle me-2">
+          </div>
+          <div class="col p-4">
+            <h5>{{ user['nickname'] }}</h5>
+            <p>{% if user['email'] %}
+                {{ user['email'] }}
+                {% endif %}
+            </p>
+            <p><small class="text-muted"><i class="far fa-calendar-plus fa-1x"></i> <span>{{ user['created'].strftime('%Y-%m-%d') }} Add</span></small></p>
+            <a href="#" class="btn btn-dark m-1 btn-sm">Change Profile</a>
+          </div>
+
+        </div>
       </div>
 
       <div class="container-fluid">
-        <div class="row">
-          <div class="col bg-white shadow m-4 p-3 rounded">
+          <div class="bg-white shadow w-75 mx-auto mt-3 p-3 rounded">
             <h6>Recent Published</h6>
-
             <ul class="list-group border">
                 {% for post in user['posts'] %}
                 <li class="border-0 list-group-item d-flex justify-content-between align-items-center">
@@ -32,23 +37,6 @@
                 </li>
                 {% endfor %}
             </ul>
-
-          </div>
-          <div class="col bg-white shadow m-4 p-3 rounded">
-            <h6>Recent Collected</h6>
-
-            <ul class="list-group border">
-                {% for post in user['markposts'] %}
-                <li class="border-0 list-group-item d-flex justify-content-between align-items-center">
-                    <div class="d-flex w-100 justify-content-between">
-                        <a href="{{ url_for('blog.ViewPost', id=post['id']) }}" class="link-dark">{{post['title']}}</a>
-                        <small class="text-muted">{{ post['created'].strftime('%Y-%m-%d') }}</small>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-
-          </div>
         </div>
       </div>
 </div>
