@@ -1,29 +1,93 @@
 {% extends 'base.html' %}
 
-{% block header %}
-  <h1>{% block title %}Posts{% endblock %}</h1>
-  {% if g.user %}
-    <a class="action" href="{{ url_for('blog.create') }}">New</a>
-  {% endif %}
-{% endblock %}
+{% block title %}Posts{% endblock %}
+
 
 {% block content %}
-  {% for post in posts %}
-    <article class="post">
-      <header>
-        <div>
-          <h1>{{ post['title'] }}</h1>
-          <a href="{{ url_for('blog.ViewPost', id=post['id']) }}">链接</a>
-          <div class="about">by {{ post['username'] }} on {{ post['created'].strftime('%Y-%m-%d') }}</div>
+<div class="container-fluid">
+  <div class="row">
+
+    <div class="col-lg-3">
+      <div class="m-2 p-2">
+
+        {% if g.user['is_block'] == 0 %}
+        <div class="text-center">
+          <a href="{{ url_for('blog.create') }}">
+          <button type="button" class="btn btn-warning btn-block">Publish New Post</button></a>
         </div>
-        {% if g.user['id'] == post['author_id'] %}
-          <a class="action" href="{{ url_for('blog.update', id=post['id']) }}">Edit</a>
+        {% else %}
+        <div class="text-center">
+          <p><button type="button" disabled class="btn btn-dark btn-block">Publish New Post</button></p>
+
+          <small class="text-center text-muted">Login to Publish</small>
+        </div>
         {% endif %}
-      </header>
-      <p class="body">{{ post['body'] }}</p>
-    </article>
-    {% if not loop.last %}
-      <hr>
-    {% endif %}
-  {% endfor %}
+
+        <div class="pt-3">
+        <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column">
+
+          <div class="form-group row">
+            <label for="type" class="col-3 col-form-label col-form-label-sm">Type</label>
+            <div class="col-9">
+              <input id="type" name="type" required value="{{ request.form['type'] }}" class="form-control form-control-sm" placeholder="Type of pet.">
+            </div>
+          </div>
+      
+          <div class="form-group row">
+            <label for="city" class="col-3 col-form-label col-form-label-sm">City</label>
+            <div class="col-9">
+              <input id="city" name="city" required value="{{ request.form['city'] }}" class="form-control form-control-sm" placeholder="Your location.">
+            </div>
+          </div>
+      
+          <div class="form-group row">
+            <label for="startdate" class="col-3 col-form-label col-form-label-sm">Start</label>
+            <div class="col-9">
+              <input type="date" id="startdate" name="startdate" required value="{{ request.form['startdate'] }}" class="form-control form-control-sm">
+            </div>
+          </div>
+      
+          <div class="form-group row">
+            <label for="enddate" class="col-3 col-form-label col-form-label-sm">End</label>
+            <div class="col-9">
+              <input type="date" id="enddate" name="enddate" required value="{{ request.form['enddate'] }}" class="form-control form-control-sm">
+            </div>
+          </div>
+      
+          <button type="submit" class="btn btn-warning">Search</button>
+          
+      
+        </form>
+      </div>
+      </div>
+    </div>
+
+    <div class="col-lg-9">
+      <div class="m-1 p-2">
+        <div class="album">
+          <div class="container">
+            <div class="row row-cols-1 row-cols-sm-2 row-cols-md-3 g-3">
+
+              {% for post in posts %}
+              <div class="col">
+                <div class="card shadow">
+                  <a class="link-dark" href="{{ url_for('blog.ViewPost', id=post['id']) }}">
+                  <img class="card-img-top" height="225" src="https://imagesvc.meredithcorp.io/v3/mm/image?url=https%3A%2F%2Fstatic.onecms.io%2Fwp-content%2Fuploads%2Fsites%2F28%2F2020%2F10%2F13%2Fcorgi-dog-POPDOGNAME1020.jpg" alt="Card image cap"></a>
+                  <div class="card-body">
+                    <p>Type: TODO, Age: TODO</p>
+                    <p>Location: TODO, Duration: TODO</p>
+                    <p class="mt-1 text-muted text-end">{{ post['username'] }} posted on {{ post['created'].strftime('%Y-%m-%d') }}</p>
+                  </div>
+                </div>
+              </div>
+              {% endfor %}
+
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 {% endblock %}
