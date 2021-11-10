@@ -16,12 +16,9 @@ def string_in_page(str_list, page):
 def check_get(url, expected_string):
     response = c.get(url)
     status_code, resp_data = response.status_code, str(response.data)
-    if status_code != 200:
-        return False, f"{url} GET Error: {status_code}"
+    assert status_code == 200, f"{url} GET Error: {status_code}"
     ok, err_string = string_in_page(expected_string, resp_data)
-    if not ok:
-        return False, f"{url} GET Error: {err_string} not exists in return content"
-    return True, ""
+    assert ok, f"{url} GET Error: {err_string} not exists in return content"
 
 def check_post(url, expected_string, request):
     response = c.post(url, data=request, follow_redirects=True)
@@ -32,7 +29,7 @@ def check_post(url, expected_string, request):
 
 def test_register():
     check_get(url="/auth/register", 
-              expected_string=["Username", "Password", "Email", "Imagecode", "Submit"])
+              expected_string=["Username", "Password", "Email", "Verification", "Register"])
 
     with c.session_transaction() as sess:
         sess['imagecode'] = '11'
@@ -65,17 +62,28 @@ def test_login():
 
 
 def test_user_profile():
-    user_id = 6
+    user_id = 7
     with c.session_transaction() as sess:
         sess['user_id'] = user_id
-    check_get(url=f"/home/{user_id}",
-              expected_string=["test99", "test99@test99", "Recent Published Post"])
+    check_get(url=f"/user/home/{user_id}",
+              expected_string=["test99", "test99@gmail.com", "Recent Published"])
     
     # TODO[yikai]: write test for set functions
     
 def test_main_page():
     check_get(url=f"/",
-              expected_string=["Latest"])
+              expected_string=["Type", "City", "Start", "End", "Publish New Post"])
+    
+    check_get(url="/ViewPost/1",
+              expected_string=["Type:", "TODO", "comment 1"])
+    # TODO[yikai]: write test for search functions
+
+def test_create_pet():
+    user_id = 7
+    with c.session_transaction() as sess:
+        sess['user_id'] = user_id
+    create_request = {"age": 1, "weight": 10, "type": "dog", "description": "cute dog", "city": "Los Angeles"}
+    check_post(url="/create", request=create_request, expected_string="")
 
     
 

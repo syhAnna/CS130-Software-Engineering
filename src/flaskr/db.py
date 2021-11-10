@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 # author: zyk
 # create a connection to it. Any queries and operations are performed using the connection
+# define tables that need to be used
 
-
+from collections import defaultdict
 from flask import current_app, g
 from flask.cli import with_appcontext
 import json
+import datetime
 from peewee import *
 
 dbConfig = json.load(open("flaskr/dbConfig.json"))
@@ -17,43 +19,49 @@ mydatabase = MySQLDatabase(host=dbConfig["host"],
                            port=3306)
 mydatabase.connect()
 
-# TODO[yinfan]: design database
 class BaseModel(Model):
     class Meta:
         database = mydatabase
 
+class ImageDB(BaseModel):
+    created = DateTimeField(default=datetime.datetime.now)
+    filename = TextField()
+    filehash = TextField(null=True)
+
 # peewee will generate an auto-increment field id for every db
 class UserDB(BaseModel):
-    created = DateTimeField()
+    created = DateTimeField(default=datetime.datetime.now)
     username = CharField(unique=True)
     password = CharField()
-    email = CharField(default="")
+    email = CharField()
+    image = ForeignKeyField(ImageDB, null=True, default=None)
 
-    # discarded
-    is_block = BooleanField(default=0)
-
-class PostDB(BaseModel):
-    author = ForeignKeyField(UserDB, backref="user_id")
-    num_view = IntegerField(default=0)
-    num_reply = IntegerField(default=0)
-    created = DateTimeField()
-    title = TextField()
-    body = TextField()
-
+class PetDB(BaseModel):
+    owner = ForeignKeyField(UserDB, backref="owner_id", column_name="owner_id")
+    age = IntegerField(default=0)
+    weight = IntegerField(default=0)
+    created = DateTimeField(default=datetime.datetime.now)
+    type = TextField()
+    location = TextField()
+    description = TextField()
+    image = ForeignKeyField(ImageDB, null=True, default=None)
 
 class ReplyDB(BaseModel):
-    author = ForeignKeyField(UserDB, backref="author_id1", column_name="author_id")
-    post = ForeignKeyField(PostDB, backref="post_id1", column_name="post_id")
-    created = DateTimeField()
+    author = ForeignKeyField(UserDB, backref="author_id", column_name="author_id")
+    pet = ForeignKeyField(PetDB, backref="pet_id", column_name="pet_id")
+    created = DateTimeField(default=datetime.datetime.now)
     body = TextField()
 
-
-class PostFileDB(BaseModel):
-    post = ForeignKeyField(PostDB, backref="post_id1", column_name="post_id")
-    created = DateTimeField()
-    filename = TextField()
-    filehash = TextField()
-
-mydatabase.create_tables([UserDB, PostDB, ReplyDB, PostFileDB])
+mydatabase.create_tables([UserDB, PetDB, ReplyDB, ImageDB])
+if ImageDB.select().count() < 2:
+    default_pic_dir = "flaskr/static/pic/"
+    ImageDB.insert({
+        ImageDB.filename: default_pic_dir + "default_cat_image.jpeg",
+        ImageDB.created: datetime.datetime.now()
+    }).execute()
+    ImageDB.insert({
+        ImageDB.filename: default_pic_dir + "default_dog_image.jpeg",
+        ImageDB.created: datetime.datetime.now()
+    }).execute()
 def init_app(app):
     return
