@@ -55,7 +55,6 @@ def get_register_info(form):
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
-        logging.info(request.form)
         username, password, email, error = get_register_info(request.form)
         logging.info(f"new user info: username: {username}, error: {error}")
 
@@ -80,15 +79,15 @@ def get_login_info(form):
     error = None
     user_info = UserDB.select().where(UserDB.username == username)
     if len(user_info) == 0:
-        error = "Username Does Not Exist"
+        error = "Error: Username Does Not Exist"
         user_info = None
     else:
         user_info = user_info.get()
         logging.info(f"input password {password}, password in db {user_info.__dict__}")
         if not check_password_hash(user_info.password, password):
-            error = "Password Incorrect"
+            error = "Error: Password Incorrect"
         elif imagecode != session['imagecode']:
-            error = "Imagecode Incorrect"
+            error = "Error: Imagecode Incorrect"
 
     return user_info, error
 

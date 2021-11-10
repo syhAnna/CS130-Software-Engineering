@@ -1,4 +1,5 @@
 # user_profile page
+# show & set user profile
 from flask import (
     Blueprint, flash, g, redirect, render_template, request, url_for, current_app
 )
@@ -96,3 +97,13 @@ def setpass():
             return redirect(url_for('blog.index'))
 
     return render_template('user/temp_setpass.html')
+
+
+# [TODO]: set user picture for user
+@bp.route('/setpic', methods=('GET', 'POST'))
+def setpic():
+    if request.method == 'POST':
+        pass
+
+    return render_template('user/temp_setemail.html')
+

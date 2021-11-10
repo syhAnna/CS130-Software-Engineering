@@ -90,7 +90,7 @@
       </div>
     </form>
   </div>
-    {% if g.user['is_block'] == 0 %}
+    {% if g.user %}
       <a href="{{ url_for('blog.create') }}" class="layui-btn">Publish New Post</a>
     {% endif %}
     </div> 
