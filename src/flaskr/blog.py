@@ -27,7 +27,7 @@ def index():
         return redirect(url_for('blog.SEARCH_TITLE', ST=ST))
 
     posts = get_index_info()
-    return render_template('blog/temp_index.html', posts=posts)
+    return render_template('blog/index.html', posts=posts)
 
 
 # create a new post
@@ -55,7 +55,7 @@ def create():
             SAVE_FILES(request.files.getlist("file"), savepath, post_id)
             return redirect(url_for('blog.index'))
 
-    return render_template('blog/temp_create.html')
+    return render_template('blog/create.html')
 
 
 # view a post
@@ -99,7 +99,7 @@ def ViewPost(id):
     t = PostDB.update(num_view=num_view).where(PostDB.id==id)
     t.execute()
 
-    return render_template('blog/temp_ViewPost.html', post=apost)
+    return render_template('blog/ViewPost.html', post=apost)
 
 
 def CHECK_DOWNLOADFILE(post_file_id, filename):
@@ -154,7 +154,8 @@ def SEARCH_TITLE(ST):
         return redirect(url_for('blog.SEARCH_TITLE', ST=ST))
     posts = title_search(ST)
     users = user_search(ST)
-    return render_template('blog/temp_SearchResult.html', posts=posts, users=users)
+    return render_template('blog/index.html', posts=posts)
+    # return render_template('blog/temp_SearchResult.html', posts=posts, users=users)
 
 
 # search a keyword ST in users
@@ -164,32 +165,3 @@ def SEARCH_USER(ST):
     users = user_search(ST)
 
     return json.dumps(users, ensure_ascii=False)
-
-
-''' # update a post
-@bp.route('/update/<int:id>', methods=('GET', 'POST'))
-@login_required
-def update(id):
-    post = get_post(id)
-
-    if request.method == 'POST':
-        title = request.form['title']
-        body = request.form['body']
-        error = None
-
-        if not title:
-            error = 'Title is required.'
-
-        if error is not None:
-            flash(error)
-        else:
-            conn, db = get_db()
-            db.execute(
-                'UPDATE post SET title = %s, body = %s'
-                ' WHERE id = %s',
-                (title, body, id)
-            )
-            conn.commit()
-            return redirect(url_for('blog.index'))
-
-    return render_template('blog/temp_update.html', post=post) '''
