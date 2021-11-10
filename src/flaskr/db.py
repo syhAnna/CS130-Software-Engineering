@@ -26,7 +26,6 @@ class BaseModel(Model):
 class UserDB(BaseModel):
     created = DateTimeField()
     username = CharField(unique=True)
-    nickname = CharField()
     password = CharField()
     email = CharField(default="")
 
@@ -40,13 +39,6 @@ class PostDB(BaseModel):
     created = DateTimeField()
     title = TextField()
     body = TextField()
-
-    # discarded
-    num_like = IntegerField(default=0)
-    num_collect = IntegerField(default=0)
-    hot = DoubleField(default=0.0)
-    is_fine = BooleanField(default=0)
-    is_top = BooleanField(default=0)
 
 
 class ReplyDB(BaseModel):
@@ -62,15 +54,6 @@ class PostFileDB(BaseModel):
     filename = TextField()
     filehash = TextField()
 
-# discarded?
-class CollectsDB(BaseModel):
-    author = ForeignKeyField(UserDB, backref="author_id1", column_name="author_id")
-    post = ForeignKeyField(PostDB, backref="post_id1", column_name="post_id")
-
-class LikesDB(BaseModel):
-    author = ForeignKeyField(UserDB, backref="author_id1", column_name="author_id")
-    post = ForeignKeyField(PostDB, backref="post_id1", column_name="post_id")
-
-mydatabase.create_tables([UserDB, PostDB, ReplyDB, PostFileDB, CollectsDB, LikesDB])
+mydatabase.create_tables([UserDB, PostDB, ReplyDB, PostFileDB])
 def init_app(app):
     return

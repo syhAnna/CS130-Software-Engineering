@@ -5,13 +5,8 @@ class UserInfo:
         self.uid = uid
         self.email = email
         self.uname = uname
-        self.ugender = ugender
-        self.ulocation = ulocation
         self.display_pic = display_pic
         self.register_date = register_date
-        self.pets = pets
-        self.free_duration = free_duration
-        self.busy_duration = busy_duration
     
     @staticmethod
     def get_user_info_by_uid(uid):
@@ -34,13 +29,6 @@ class PetInfo:
     def get_pets_by_uid(uid):
         return []
 
-class PostInfo:
-    def __init__(self):
-        pass
-
-class Duration:
-    def __init__(self):
-        pass
         
     
 

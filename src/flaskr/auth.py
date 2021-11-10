@@ -26,13 +26,10 @@ bp = Blueprint('auth', __name__, url_prefix='/auth')
 def get_register_info(form):
     username = form['username']
     password = form['password']
-    nickname = form['nickname']
     repassword = form['repassword']
     email = form['email']
     imagecode = form['imagecode']
     error = None
-    if not nickname:
-        nickname = username
     if not username:
         error = 'Username is required.'
     elif not password:
@@ -47,28 +44,25 @@ def get_register_info(form):
         error = 'The length of password should be between 6 and 16.'
     elif len(username) > 40:
         error = 'The maximum size of username is 40, your username is too long!'
-    elif len(nickname) > 40:
-        error = 'The maximum size of nickname is 40, your username is too long!'
     elif len(UserDB.select(UserDB.id).where(UserDB.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
     elif imagecode != session['imagecode']:
         error = 'Imagecode incorrect'
 
-    return username, generate_password_hash(password), nickname, email, error
+    return username, generate_password_hash(password), email, error
 
 
 @bp.route('/register', methods=('GET', 'POST'))
 def register():
     if request.method == 'POST':
         logging.info(request.form)
-        username, password, nickname, email, error = get_register_info(request.form)
-        logging.info(f"new user info: username: {username}, nickname: {nickname}, error: {error}")
+        username, password, email, error = get_register_info(request.form)
+        logging.info(f"new user info: username: {username}, error: {error}")
 
         if error is None:
             UserDB.insert({
                 UserDB.username: username,
                 UserDB.password: password,
-                UserDB.nickname: nickname,
                 UserDB.email: email,
                 UserDB.created: datetime.datetime.now()
             }).execute()
@@ -89,7 +83,8 @@ def get_login_info(form):
         error = "Username Does Not Exist"
         user_info = None
     else:
-        user_info = UserDB.get()
+        user_info = user_info.get()
+        logging.info(f"input password {password}, password in db {user_info.__dict__}")
         if not check_password_hash(user_info.password, password):
             error = "Password Incorrect"
         elif imagecode != session['imagecode']:

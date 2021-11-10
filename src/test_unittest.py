@@ -12,7 +12,7 @@ def test_login():
 
         with c.session_transaction() as sess:
             sess['imagecode'] = '11'
-        input_data = {"username": "test3", "password": "test33", "nickname": "test3", "repassword": "test33", "email": "test3@test3", "imagecode": "11"}
+        input_data = {"username": "test3", "password": "test33", "repassword": "test33", "email": "test3@test3", "imagecode": "11"}
         response = c.post("/auth/register", data=input_data, follow_redirects=True)
         # this will create a user name test3!   
 
