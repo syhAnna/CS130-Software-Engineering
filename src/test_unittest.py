@@ -1,4 +1,6 @@
 import pytest
+import string
+import random
 from flaskr import create_app
 
 headers = {'Content-Type': 'application/json'}
@@ -33,16 +35,30 @@ def test_register():
 
     with c.session_transaction() as sess:
         sess['imagecode'] = '11'
+    # a failing register
     register_request = {
         "username": "test3", 
         "password": "test33", 
         "repassword": "test33", 
-        "email": "test3@test3", 
+        "email": "test3@gmail.com", 
         "imagecode": "11"
     }
     check_post(url="/auth/register", 
                request=register_request,
                expected_string="is already registered.")
+    
+    # a randomly generated username to make sure it's new
+    username = str(random.randint(0, 9)).join(random.sample(string.ascii_letters, 6))
+    register_request = {
+        "username": username, 
+        "password": "test33", 
+        "repassword": "test33", 
+        "email": "test3@gmail.com", 
+        "imagecode": "11"
+    }
+    check_post(url="/auth/register", 
+               request=register_request,
+               expected_string="Login</button>")
 
 
 def test_login():
@@ -51,6 +67,15 @@ def test_login():
 
     with c.session_transaction() as sess:
         sess['imagecode'] = '11'
+    login_request = {
+        "username": "test3", 
+        "password": "test333", 
+        "imagecode": "11"
+    }
+    check_post(url="/auth/login", 
+                request=login_request,
+                expected_string=["Password Incorrect", "Login</button>"])
+
     login_request = {
         "username": "test3", 
         "password": "test33", 
@@ -62,17 +87,17 @@ def test_login():
 
 
 def test_user_profile():
-    user_id = 7
+    user_id = 11
     with c.session_transaction() as sess:
         sess['user_id'] = user_id
     check_get(url=f"/user/home/{user_id}",
-              expected_string=["test99", "test99@gmail.com", "Recent Published"])
+              expected_string=["test3", "test3@gmail.com", "Recent Published"])
     
     # TODO[yikai]: write test for set functions
     
 def test_main_page():
     check_get(url=f"/",
-              expected_string=["Type", "City", "Start", "End", "Publish New Post"])
+              expected_string=["Type: TODO", "City", "Start", "End", "Publish New Post"])
     
     check_get(url="/ViewPost/1",
               expected_string=["Type:", "TODO", "comment 1"])
