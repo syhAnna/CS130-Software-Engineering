@@ -44,6 +44,16 @@ class UserInfo:
         self.pets = pets
         self.uimage = image
     
+    """
+    Add a new user with the given information to the database
+
+    parameters:
+        username (string): the new user's username
+        password (string): the new user's password
+        email (string): the new user's email
+    return:
+        uid (int): the new user's unique id
+    """
     @staticmethod
     def add_new_user(username, password, email):
         uid = UserDB.insert({
@@ -55,6 +65,17 @@ class UserInfo:
         }).execute()
         return uid
     
+    """
+    Get user information stored in database with the given form that contains username, password and the verification code if the verification code and password matches. Otherwise, return null user information and error message.
+
+    parameters:
+        form (dictionary): contains username, password, imagecode
+        correct_imagecode (string): this will be used to compared with the imagecode in the form
+    
+    return:
+        user_info (dictionary / None): the user information stored in database, if doesn't exist or match failure, return none.
+        error (string / None): if error occur, return error message, otherwise return None
+    """
     @staticmethod
     def get_login_info(form, correct_imagecode):
         username = form['username']
@@ -74,6 +95,15 @@ class UserInfo:
                 error = "Error: Imagecode Incorrect"
         return user_info, error
 
+    """
+    Get user information of given user id
+
+    parameter:
+    uid (int): user's unique id
+    
+    return:
+    user_info (dictionary): all the user's information (including the pets information)
+    """
     @staticmethod
     def get_user_info_by_uid(uid):
         uinfo = model_to_dict(UserDB.select(UserDB.id, UserDB.username, UserDB.email, UserDB.created).where(UserDB.id == uid).get())
@@ -98,6 +128,16 @@ class PetInfo:
         self.pdescription = pdescription
         # self.pgender = pgender
     
+    """
+    Add a new pet with the given information to the database
+
+    parameters:
+        form (dictionary): the information about the pet, contains owner id, age, weight, type, city, description
+        file: the image of the pet
+    
+    return:
+        pet_id (int): the unique pet id.
+    """
     @staticmethod
     def add_new_pet(form, file):
         image_id = 1
@@ -118,6 +158,15 @@ class PetInfo:
         }).execute()
         return pet_id, ""
 
+    """
+    Get all the owned pet information of a given user id
+
+    parameter:
+        uid (int): user's unique id
+
+    return:
+        pets (list): a list of the user's pets information
+    """
     @staticmethod
     def get_pets_by_uid(uid):
         pets = []
@@ -131,6 +180,14 @@ class PetInfo:
             #                     ptype=pet["type"], pdescription=pet["description"], pimage=image))
         return pets   
 
+    """
+    Get all the pets information
+
+    parameters: None
+
+    return: 
+        pets (list): a list of all the pets information
+    """
     @staticmethod
     def get_pets():
         allpets = PetDB.select()
@@ -148,6 +205,16 @@ class PetInfo:
         #     posts[i]['files'] = tmp_files
         return pets
 
+
+    """
+    Get the pet information given a unique pet id
+    
+    parameter:
+        pet_id (int): the unique pet id
+
+    return:
+        pet (dictionary): all the information related to the pet.
+    """
     @staticmethod
     def get_pet_for_view(pet_id):
         pet = model_to_dict(PetDB.select().where(PetDB.id == pet_id).get())
@@ -157,6 +224,14 @@ class PetInfo:
         pet["reply"] = ReplyInfo.get_reply_by_pid(pet_id)
         return pet
     
+    """
+    Delete a certain pet's information in the database
+
+    parameter:
+        pet_id (int): the unique pet id
+    
+    return: None
+    """
     @staticmethod
     def delete_pet(pet_id):
         image_id = PetDB.select(PetDB.image_id).where(PetDB.id == pet_id).get()
