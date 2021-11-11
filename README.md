@@ -1,4 +1,7 @@
 #### About CatEatPad
+#### TODOList
+- show the display picture
+- search function
 
 #### how to Run CatEatPad
 ##### download mysql
