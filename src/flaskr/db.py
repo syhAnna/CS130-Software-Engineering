@@ -45,6 +45,8 @@ class PetDB(BaseModel):
     location = TextField()
     description = TextField()
     image = ForeignKeyField(ImageDB, null=True, default=None)
+    startdate = DateTimeField()
+    enddate = DateTimeField()
 
 class ReplyDB(BaseModel):
     author = ForeignKeyField(UserDB, backref="author_id", column_name="author_id")
@@ -54,13 +56,12 @@ class ReplyDB(BaseModel):
 
 mydatabase.create_tables([UserDB, PetDB, ReplyDB, ImageDB])
 if ImageDB.select().count() < 2:
-    default_pic_dir = "flaskr/static/pic/"
     ImageDB.insert({
-        ImageDB.filename: default_pic_dir + "default_cat_image.jpeg",
+        ImageDB.filename: "default_cat_image.jpeg",
         ImageDB.created: datetime.datetime.now()
     }).execute()
     ImageDB.insert({
-        ImageDB.filename: default_pic_dir + "default_dog_image.jpeg",
+        ImageDB.filename: "default_dog_image.jpeg",
         ImageDB.created: datetime.datetime.now()
     }).execute()
 def init_app(app):

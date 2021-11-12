@@ -12,16 +12,13 @@ from .auth import login_required
 
 bp = Blueprint('blog', __name__)
 
-# TODO: search part
 # index page
 @bp.route('/',methods=('GET', 'POST'))
 def index():
-    # if request.method == 'POST':
-    #     ST = request.form.get("searchkeywords",type=str,default=None)
-    #     posts = title_search(ST)
-    #     return redirect(url_for('blog.SEARCH_TITLE', ST=ST))
-
-    posts = PetInfo.get_pets()
+    form = {}
+    if request.method == 'POST':
+        form = request.form
+    posts = PetInfo.get_pets(form=form)
     return render_template('blog/index.html', posts=posts)
 
 
@@ -33,25 +30,12 @@ def create():
         form = dict(request.form)
         form["savepath"] = current_app.config['UPLOAD_FOLDER']
         form["owner_id"] = g.user['id']
-        file_list = request.files.getlist("file")
-        file = None
-        for tfile in file_list:
-            if tfile.filename:
-                file = tfile
+        file = request.files.get("photo", default=None)
+        logging.info(f"request.form for create {form}, {request.files}")
         pet_id, error = PetInfo.add_new_pet(form, file=file)
         if not error:
             return redirect(url_for('blog.index'))
         flash(error)
-
-        # if error is not None:
-        #     flash(error)
-        # else:
-        #     t = PostDB.insert(title=title, body=body, author_id=g.user['id'], created=datetime.datetime.now())
-        #     post_id = t.execute()
-        #     print(post_id)
-
-        #     SAVE_FILES(request.files.getlist("file"), savepath, post_id)
-        #     return redirect(url_for('blog.index'))
 
     return render_template('blog/create.html')
 
@@ -66,49 +50,20 @@ def ViewPost(pet_id):
     logging.info(f"info of pet is {pet}")
     return render_template('blog/ViewPost.html', post=pet)
 
-# # view a post
-# @bp.route('/ViewPost/<int:id>', methods=('GET', 'POST'))
-# def ViewPost(id):
-#     if request.method == 'POST':
-#         body = request.form.get("body",type=str,default=None)
-#         ST = request.form.get("searchkeywords",type=str,default=None)
-#         Filename = request.form.get("file",type=str,default=None)
-#         if body:
-#             error = None
-#         if ST:
-#             posts = title_search(ST)
-#             return redirect(url_for('blog.SEARCH_TITLE', ST=ST))
-#             return render_template('blog/temp_SearchResult.html', posts=posts)
-#             error = None
 
-#         if error is not None:
-#             flash(error)
-#         else:
-#             t = ReplyDB.insert(body=body, author_id=g.user['id'], post_id=id, created=datetime.datetime.now())
-#             t.execute()
+# delete a reply by id
+@bp.route('/DeleteReply/<int:id>', methods=('POST',))
+@login_required
+def DeleteReply(id):
+    post_id = ReplyInfo.delete_reply(id)
+    return redirect(url_for('blog.ViewPost', id=post_id))
 
-#             print("insert done!")
 
-#             apost = get_view_post(id)
-
-#             # update the the number of reply
-#             num_reply = int(apost['num_reply']) + 1
-
-#             t = PostDB.update(num_reply=num_reply).where(PostDB.id == id)
-#             t.execute()
-#             print("num_reply", num_reply)
-
-#     apost = get_view_post(id)
-#     pprint(apost)
-
-#     # update the the number of views
-#     num_view = int(apost['num_view']) + 1
-
-#     t = PostDB.update(num_view=num_view).where(PostDB.id==id)
-#     t.execute()
-
-#     return render_template('blog/ViewPost.html', post=apost)
-
+@bp.route('/DeletePost/<int:id>', methods=('POST',))
+@login_required
+def DeletePost(id):
+    PetInfo.delete_pet(id)
+    return redirect(url_for('blog.index'))
 
 # def CHECK_DOWNLOADFILE(post_file_id, filename):
 #     with open(filename, "rb") as f:
@@ -133,41 +88,3 @@ def ViewPost(pet_id):
 #         return redirect(url_for("blog.ViewPost", id=post_id))
 
 #     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)
-
-
-# delete a reply by id
-@bp.route('/DeleteReply/<int:id>', methods=('POST',))
-@login_required
-def DeleteReply(id):
-    post_id = ReplyInfo.delete_reply(id)
-    return redirect(url_for('blog.ViewPost', id=post_id))
-
-
-@bp.route('/DeletePost/<int:id>', methods=('POST',))
-@login_required
-def DeletePost(id):
-    PetInfo.delete_pet(id)
-    return redirect(url_for('blog.index'))
-
-
-# # search a keyword ST in titles
-# @bp.route('/SEARCH/TITLE/<string:ST>', methods=('GET','POST'))
-# @login_required
-# def SEARCH_TITLE(ST):
-#     if request.method == 'POST':
-#         ST = request.form.get("searchkeywords", type=str,default=None)
-#         # posts = title_search(ST)
-#         return redirect(url_for('blog.SEARCH_TITLE', ST=ST))
-#     posts = title_search(ST)
-#     # users = user_search(ST)
-#     return render_template('blog/index.html', posts=posts)
-#     # return render_template('blog/temp_SearchResult.html', posts=posts, users=users)
-
-
-# # search a keyword ST in users
-# @bp.route('/SEARCH/USER/<string:ST>')
-# @login_required
-# def SEARCH_USER(ST):
-#     users = user_search(ST)
-
-#     return json.dumps(users, ensure_ascii=False)
