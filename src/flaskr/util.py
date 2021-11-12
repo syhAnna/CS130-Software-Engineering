@@ -6,6 +6,7 @@ import random
 import hashlib
 import subprocess
 from .db import *
+from . import UPLOAD_FOLDER
 from werkzeug.exceptions import abort
 from playhouse.shortcuts import model_to_dict
 
@@ -38,7 +39,9 @@ def generate_validate_picture(num_chars = 5):
     return im, generated_string
 
 def generate_filecont_hash(content):
-    return hashlib.sha256().update(content).hexdigest()
+    m = hashlib.sha256()
+    m.update(content)
+    return m.hexdigest()
 
 def check_filecontent_hash(filehash, content):
     content_hash = generate_filecont_hash(content)

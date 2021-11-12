@@ -10,12 +10,17 @@ class ImageInfo:
     @staticmethod
     def get_image_by_id(image_id):
         image = model_to_dict(ImageDB.select(ImageDB.filename, ImageDB.filehash).where(ImageDB.id == image_id).get())
+        if image_id > 2:
+            image["filename"] = os.path.join(UPLOAD_FOLDER, str(image_id) + "_" + image["filename"])
+        else:
+            image["filename"] = os.path.join("/static/pic/", image["filename"])
+        # logging.info(f"get_image_by_id({image_id}) returns {image}")
         return image
     
     @staticmethod
     def add_new_image(file, savepath):
         file_content = file.read()
-        logging.info(f"add_new_image {file.filename}")
+        logging.info(f"add_new_image {file.filename}, {file_content}")
         filename = secure_filename(file.filename)
         filehash = generate_filecont_hash(file_content)
 
@@ -106,17 +111,18 @@ class UserInfo:
     """
     @staticmethod
     def get_user_info_by_uid(uid):
-        uinfo = model_to_dict(UserDB.select(UserDB.id, UserDB.username, UserDB.email, UserDB.created).where(UserDB.id == uid).get())
+        uinfo = model_to_dict(UserDB.select(UserDB.id, UserDB.username, UserDB.email, UserDB.created, UserDB.image_id).where(UserDB.id == uid).get())
         logging.info(f"get user info {uinfo}")
         pets = PetInfo.get_pets_by_uid(uid)
-        # image = ImageInfo.get_image_by_id(image_id=uinfo["image"]["id"])
+        image = ImageInfo.get_image_by_id(image_id=uinfo["image"]["id"])
+        uinfo["image"] = image["filename"]
         uinfo["pets"] = pets
         return uinfo 
         # return UserInfo(uid=uid, uname=uinfo["username"], email=uinfo["email"],
         #                 register_date=uinfo["created"], pets=pets, image=image)
 
 class PetInfo:
-    def __init__(self, pid=-1, plocation="",
+    def __init__(self, pid=-1, plocation="", pstart=None, pend=None,
                     pweight=-1, p_age=-1, ptype = "",
                     pdescription="", pimage = None):
         self.pid = pid
@@ -126,6 +132,8 @@ class PetInfo:
         self.pimage = pimage
         self.plocation = plocation
         self.pdescription = pdescription
+        self.pstart = pstart
+        self.pend = pend
         # self.pgender = pgender
     
     """
@@ -152,9 +160,11 @@ class PetInfo:
             PetDB.owner_id: form["owner_id"],
             PetDB.age: form["age"],
             PetDB.weight: form["weight"],
-            PetDB.type: form["type"],
-            PetDB.location: form["city"],
-            PetDB.description: form["description"]
+            PetDB.type: form["type"].lower(),
+            PetDB.location: form["city"].lower(),
+            PetDB.description: form["description"],
+            PetDB.startdate: datetime.datetime.strptime(form["startdate"], "%Y-%m-%d"),
+            PetDB.enddate: datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
         }).execute()
         return pet_id, ""
 
@@ -174,7 +184,9 @@ class PetInfo:
                                 PetDB.created, PetDB.description, PetDB.image_id)\
                                 .where(PetDB.owner_id == uid).order_by(PetDB.created.desc())
         for pet in raw_pets:
-            # image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
+            pet = model_to_dict(pet)
+            image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
+            pet["image"] = image["filename"]
             pets.append(pet)
             # pets.append(PetInfo(pid=pet["id"], pweight=pet["weight"], p_age=pet["age"], 
             #                     ptype=pet["type"], pdescription=pet["description"], pimage=image))
@@ -189,20 +201,21 @@ class PetInfo:
         pets (list): a list of all the pets information
     """
     @staticmethod
-    def get_pets():
-        allpets = PetDB.select()
-        allpets = sorted(allpets, key=lambda p: p.created, reverse=True)
+    def get_pets(form={}):
+        ptype, pcity = "%%", "%%"
+        if "type" in form:
+            ptype = "%" + form["type"] + "%"
+        if "city" in form:
+            pcity = "%" + form["city"] + "%"
+        pstartdate, penddate = datetime.datetime.strptime("2000-1-1", "%Y-%m-%d"), datetime.datetime.strptime("3000-1-1", "%Y-%m-%d")
+        allpets = PetDB.select().where(PetDB.type ** ptype, PetDB.location ** pcity, PetDB.startdate > pstartdate, PetDB.enddate < penddate).order_by(PetDB.created.desc())
         pets = []
         for pet in allpets:
             pet = model_to_dict(pet)
+            image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
+            pet["image"] = image["filename"]
             pets.append(pet)
         logging.info(f"posts: {pets}")
-        # for i, apost in enumerate(posts):
-        #     tmp_files = []
-        #     allfiles = PostFileDB.select().where(PostFileDB.post_id == apost['id'])
-        #     for afile in allfiles:
-        #         tmp_files.append(model_to_dict(afile))
-        #     posts[i]['files'] = tmp_files
         return pets
 
 
@@ -220,7 +233,8 @@ class PetInfo:
         pet = model_to_dict(PetDB.select().where(PetDB.id == pet_id).get())
         pet["username"] = pet["owner"]["username"] # TODO: modify username to owner_name
         pet.pop("owner")
-        pet["image"] = pet["image"]["filename"]
+        image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
+        pet["image"] = image["filename"]
         pet["reply"] = ReplyInfo.get_reply_by_pid(pet_id)
         return pet
     
@@ -238,6 +252,7 @@ class PetInfo:
         ImageInfo.delete_image(image_id)
         ReplyInfo.delete_reply_by_pet_id(pet_id)
         PetDB.delete().where(PetDB.id == pet_id).execute()
+
 
 class ReplyInfo:
     @staticmethod

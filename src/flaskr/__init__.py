@@ -6,6 +6,7 @@ logging.basicConfig(filename='catEatPad_test.log', level=logging.DEBUG)
 from flask import Flask
 
 
+UPLOAD_FOLDER = "/static/pic/upload_folder"
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
@@ -13,7 +14,7 @@ def create_app(test_config=None):
     app.config.from_mapping(    # sets some default configuration that the app will use
          SECRET_KEY='dev',
     )
-    app.config['UPLOAD_FOLDER'] = r'~/'
+    app.config['UPLOAD_FOLDER'] = "./flaskr" + UPLOAD_FOLDER
 
     if test_config is None:
         # load the instance config, if it exists, when not testing
