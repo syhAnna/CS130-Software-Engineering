@@ -29,10 +29,10 @@ def create_app(test_config=None):
     except OSError:
         pass
 
-    # a simple page that says hello
-    @app.route('/test')
-    def hello():
-        return 'Test Page for CatEatPad!'
+    # # a simple page that says hello
+    # @app.route('/test')
+    # def hello():
+    #     return 'Test Page for CatEatPad!'
 
     from . import db
     print("__init__.py is going to init_app")

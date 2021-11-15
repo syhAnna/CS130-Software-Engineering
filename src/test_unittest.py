@@ -94,21 +94,21 @@ def test_user_profile():
               expected_string=["test3", "test3@gmail.com", "Recent Published"])
     
     # TODO[yikai]: write test for set functions
-    
-def test_main_page():
-    check_get(url=f"/",
-              expected_string=["Type: TODO", "City", "Start", "End", "Publish New Post"])
-    
-    check_get(url="/ViewPost/1",
-              expected_string=["Type:", "TODO", "comment 1"])
-    # TODO[yikai]: write test for search functions
 
 def test_create_pet():
     user_id = 7
     with c.session_transaction() as sess:
         sess['user_id'] = user_id
-    create_request = {"age": 1, "weight": 10, "type": "dog", "description": "cute dog", "city": "Los Angeles"}
+    create_request = {"age": 1, "weight": 10, "type": "dog", "description": "cute dog", "city": "Los Angeles", "startdate": "2021-11-1", "enddate": "2021-12-1"}
     check_post(url="/create", request=create_request, expected_string="")
+
+def test_main_page():
+    check_get(url=f"/",
+              expected_string=["Type: TODO", "City", "Start", "End", "Publish New Post"])
+    
+    check_get(url="/ViewPost/1",
+              expected_string=["Type:", "TODO"])
+    # TODO[yikai]: write test for search functions
 
     
 
