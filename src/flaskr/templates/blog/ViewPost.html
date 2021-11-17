@@ -9,16 +9,16 @@
     <div class="container-fluid">
       <div class="row">
         <div class="col-sm-8">
-          <p class="m-2"><strong>Type: </strong>TODO</p>
-          <p class="m-2"><strong>Age: </strong>TODO</p>
-          <p class="m-2"><strong>Weight: </strong>TODO</p>
-          <p class="m-2"><strong>City: </strong>TODO</p>
-          <p class="m-2"><strong>Start Date: </strong>TODO</p>
-          <p class="m-2"><strong>End Date: </strong>TODO</p>
-          <p class="m-2"><strong>Description: </strong>TODO</p>
+          <p class="m-2"><strong>Type: </strong>{{post['type']}}</p>
+          <p class="m-2"><strong>Age: </strong>{{post['age']}}</p>
+          <p class="m-2"><strong>Weight: </strong>{{post['weight']}}</p>
+          <p class="m-2"><strong>City: </strong>{{post['location']}}</p>
+          <p class="m-2"><strong>Start Date: </strong>{{post['startdate'].strftime('%Y-%m-%d')}}</p>
+          <p class="m-2"><strong>End Date: </strong>{{post['enddate'].strftime('%Y-%m-%d')}}</p>
+          <p class="m-2"><strong>Description: </strong>{{post['description']}}</p>
         </div>
         <div class="col-sm-4 text-center pt-4">
-            <img src="https://static01.nyt.com/images/2021/09/14/science/07CAT-STRIPES/07CAT-STRIPES-mediumSquareAt3X-v2.jpg" width="96" height="96" class="rounded-circle me-2">
+            <img src="{{post['image']}}" width="96" height="96" class="rounded-circle me-2">
         </div>
       </div>
     </div>
