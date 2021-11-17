@@ -72,10 +72,11 @@
               <div class="col">
                 <div class="card shadow">
                   <a class="link-dark" href="{{ url_for('blog.ViewPost', pet_id=post['id']) }}">
-                  <img class="card-img-top" height="225" src="/static/pic/default_dog_image.jpeg" alt="Card image cap"></a>
+                  <img class="card-img-top" height="225" src="{{post['image']}}" alt="Card image cap"></a>
                   <div class="card-body">
-                    <p>Type: TODO, Age: TODO</p>
-                    <p>Location: TODO, Duration: TODO</p>
+                    <p><strong>Type: </strong> {{post['type']}}, <strong>Age: </strong> {{post['age']}}</p>
+                    <p><strong>Location:</strong> {{post['location']}}</p>
+                    <p><strong>Duration:</strong> <small> {{post['startdate'].strftime('%Y-%m-%d')}} to {{post['enddate'].strftime('%Y-%m-%d')}} </small></p>
                     <p class="mt-1 text-muted text-end">{{ post['username'] }} posted on {{ post['created'].strftime('%Y-%m-%d') }}</p>
                   </div>
                 </div>
