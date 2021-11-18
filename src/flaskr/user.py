@@ -86,9 +86,9 @@ def set():
                 if not os.path.exists(savepath):
                     os.mkdir(savepath)
                 image_id = ImageInfo.add_new_image(file, savepath)
-            t = UserDB.update(image_id=image_id).where(UserDB.id == g.user['id'])
-            t.execute()
-            return redirect(url_for('blog.index'))
+                t = UserDB.update(image_id=image_id).where(UserDB.id == g.user['id'])
+                t.execute()
+                return redirect(url_for('blog.index'))
 
     return render_template('user/easy_set.html')
 
