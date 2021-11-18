@@ -46,6 +46,53 @@ def setemail():
     return render_template('user/easy_set.html')
 
 
+@bp.route('/set', methods=('GET', 'POST'))
+def set():
+    
+    if request.method == 'POST':
+        if 'email' in request.form:
+            email = request.form['email']
+            t = UserDB.update(email=email).where(UserDB.id == g.user['id'])
+            t.execute()
+            return redirect(url_for('blog.index'))
+        elif 'password' in request.form:
+            nowpass = request.form['nowpass']
+            password = request.form['password']
+            repassword = request.form['repassword']
+            real_password = model_to_dict(UserDB.select(UserDB.password).where(UserDB.id == g.user['id']).get())['password']
+            error = None
+            if not (check_password_hash(real_password, nowpass)):
+                error = 'Wrong password!'
+
+            if not password:
+                error = 'Password is required.'
+            elif not (password ==repassword):
+                error = 'Two passwords are inconsistent.'
+            elif not (password == repassword):
+                error = 'you enter different passwords!'
+            elif ((len(password) < 6) or (len(password) > 16)):
+                error = 'The length of password should be between 6 and 16.'
+
+            if error is not None:
+                flash(error)
+            else:
+                t = UserDB.update(password=generate_password_hash(password)).where(UserDB.id == g.user['id'])
+                t.execute()
+                return redirect(url_for('blog.index'))
+        else:
+            savepath = current_app.config['UPLOAD_FOLDER']
+            file = request.files.get("photo", default=None)
+            if file is not None and file.filename:
+                if not os.path.exists(savepath):
+                    os.mkdir(savepath)
+                image_id = ImageInfo.add_new_image(file, savepath)
+            t = UserDB.update(image_id=image_id).where(UserDB.id == g.user['id'])
+            t.execute()
+            return redirect(url_for('blog.index'))
+
+    return render_template('user/easy_set.html')
+
+
 @bp.route('/setpass', methods=('GET', 'POST'))
 def setpass():
     if request.method == 'POST':
