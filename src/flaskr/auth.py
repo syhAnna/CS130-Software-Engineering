@@ -85,7 +85,7 @@ def load_logged_in_user():
     if user_id is None:
         g.user = None
     else:
-        g.user = model_to_dict(UserDB.select().where(UserDB.id == user_id).get())
+        g.user = UserInfo.get_user_info_by_uid(user_id)
 
 
 @bp.route('/logout')
