@@ -161,18 +161,26 @@ class PetInfo:
                 os.mkdir(savepath)
             image_id = ImageInfo.add_new_image(file, savepath)
 
-        pet_id = PetDB.insert({
-            PetDB.image_id: image_id,
-            PetDB.owner_id: form["owner_id"],
-            PetDB.age: form["age"],
-            PetDB.weight: form["weight"],
-            PetDB.type: form["type"].lower(),
-            PetDB.location: form["city"].lower(),
-            PetDB.description: form["description"],
-            PetDB.startdate: datetime.datetime.strptime(form["startdate"], "%Y-%m-%d"),
-            PetDB.enddate: datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
-        }).execute()
-        return pet_id, ""
+        pet_id, error = None, ""
+        startdate = datetime.datetime.strptime(form["startdate"], "%Y-%m-%d")
+        enddate = datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
+
+        if (enddate - startdate).days < 0:
+            error = "End date should after end date"
+        else:
+            pet_id = PetDB.insert({
+                PetDB.image_id: image_id,
+                PetDB.owner_id: form["owner_id"],
+                PetDB.age: form["age"],
+                PetDB.weight: form["weight"],
+                PetDB.type: form["type"].lower(),
+                PetDB.location: form["city"].lower(),
+                PetDB.description: form["description"],
+                PetDB.startdate: startdate,
+                PetDB.enddate: enddate
+            }).execute()
+
+        return pet_id, error
 
     """
     Get all the owned pet information of a given user id
