@@ -99,8 +99,13 @@ def test_create_pet():
     user_id = 7
     with c.session_transaction() as sess:
         sess['user_id'] = user_id
-    create_request = {"age": 1, "weight": 10, "type": "dog", "description": "cute dog", "city": "Los Angeles", "startdate": "2021-11-1", "enddate": "2021-12-1"}
+    create_request = {"age": 1, "weight": 10, "type": "dog", "description": "cute dog", "city": "Los Angeles",
+                      "startdate": "2021-11-1", "enddate": "2021-12-1"}
     check_post(url="/create", request=create_request, expected_string="")
+
+    create_request = {"age": 2, "weight": 15, "type": "dog", "description": "husky", "city": "Los Angeles",
+                      "startdate": "2022-11-1", "enddate": "2021-12-1"}
+    check_post(url="/create", request=create_request, expected_string="Oops! End date should after start date :)")
 
 def test_main_page():
     check_get(url=f"/",
