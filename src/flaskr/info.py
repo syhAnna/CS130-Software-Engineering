@@ -1,5 +1,7 @@
 import os
 import logging
+
+from werkzeug.exceptions import ExpectationFailed
 from .db import *
 from .util import *
 from werkzeug.utils import secure_filename
@@ -111,7 +113,11 @@ class UserInfo:
     """
     @staticmethod
     def get_user_info_by_uid(uid):
-        uinfo = model_to_dict(UserDB.select(UserDB.id, UserDB.username, UserDB.email, UserDB.created, UserDB.image_id).where(UserDB.id == uid).get())
+        try:
+            uinfo = model_to_dict(UserDB.select(UserDB.id, UserDB.username, UserDB.email, UserDB.created, UserDB.image_id).where(UserDB.id == uid).get())
+        except Exception as err_msg:
+            logging.info(f"ERROR: fail to get user info with {err_msg}")
+            return None
         logging.info(f"get user info {uinfo}")
         pets = PetInfo.get_pets_by_uid(uid)
         image = ImageInfo.get_image_by_id(image_id=uinfo["image"]["id"])
