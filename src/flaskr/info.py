@@ -166,7 +166,7 @@ class PetInfo:
         enddate = datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
 
         if (enddate - startdate).days < 0:
-            error = "End date should after end date"
+            error = "Oops! End date should after start date :)"
         else:
             pet_id = PetDB.insert({
                 PetDB.image_id: image_id,
