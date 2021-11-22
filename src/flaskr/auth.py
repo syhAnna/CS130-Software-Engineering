@@ -30,7 +30,9 @@ def get_register_info(form):
     email = form['email']
     imagecode = form['imagecode']
     error = None
-    if not username:
+    if imagecode != session['imagecode']:
+        error = 'Imagecode incorrect'
+    elif not username:
         error = 'Username is required.'
     elif not password:
         error = 'Password is required.'
@@ -46,8 +48,6 @@ def get_register_info(form):
         error = 'The maximum size of username is 40, your username is too long!'
     elif len(UserDB.select(UserDB.id).where(UserDB.username == username))>0 :
         error = 'User {} is already registered.'.format(username)
-    elif imagecode != session['imagecode']:
-        error = 'Imagecode incorrect'
 
     return username, generate_password_hash(password), email, error
 

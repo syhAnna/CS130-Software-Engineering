@@ -27,6 +27,8 @@ def check_post(url, expected_string, request):
     status_code, resp_data = response.status_code, str(response.data)
     assert status_code == 200, f"{url} Post Error: {status_code}"
     ok, err_string = string_in_page(expected_string, resp_data)
+    # if "The length of password" in err_string:
+    #     print(resp_data)
     assert ok, f"{url} POST Error: {err_string} not exists in return content"
 
 def test_register():
@@ -43,10 +45,37 @@ def test_register():
         "email": "test3@gmail.com", 
         "imagecode": "11"
     }
-    check_post(url="/auth/register", 
-               request=register_request,
+    check_post(url="/auth/register", request=register_request,
                expected_string="is already registered.")
+    for key in ["Username", "Password", "Email", "Repassword"]:
+        old_value = register_request[key.lower()]
+        register_request[key.lower()] = ""
+        check_post(url="/auth/register", request=register_request,
+               expected_string=key + " is required")
+        register_request[key.lower()] = old_value
     
+    register_request["repassword"] = "test333"
+    check_post(url="/auth/register", request=register_request,
+               expected_string="Two passwords are inconsistent.")
+    register_request["repassword"] = "test33"
+
+    register_request["password"] = "test33" * 10
+    register_request["repassword"] = register_request["password"]
+    check_post(url="/auth/register", request=register_request,
+               expected_string="The length of password should be between 6 and 16.")
+    register_request["password"] = "test33"
+    register_request["repassword"] = register_request["password"]
+
+    register_request["username"] = "test33" * 40
+    check_post(url="/auth/register", request=register_request,
+               expected_string="The maximum size of username is 40, your username is too long!")
+    register_request["username"] = "test3"
+
+    register_request["imagecode"] = "13"
+    check_post(url="/auth/register", request=register_request,
+               expected_string="Imagecode incorrect")
+    register_request["username"] = "11"
+
     # a randomly generated username to make sure it's new
     username = str(random.randint(0, 9)).join(random.sample(string.ascii_letters, 6))
     register_request = {
@@ -104,10 +133,10 @@ def test_create_pet():
 
 def test_main_page():
     check_get(url=f"/",
-              expected_string=["Type: TODO", "City", "Start", "End", "Publish New Post"])
+              expected_string=["Type:", "City", "Start", "End", "Publish New Post"])
     
     check_get(url="/ViewPost/1",
-              expected_string=["Type:", "TODO"])
+              expected_string=["Type:"])
     # TODO[yikai]: write test for search functions
 
     
