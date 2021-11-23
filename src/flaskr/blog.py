@@ -14,12 +14,13 @@ from flask_paginate import Pagination
 bp = Blueprint('blog', __name__)
 
 # index page
-@bp.route("/")
-@bp.route('/<int:page>',methods=('GET', 'POST'))
+@bp.route("/",methods=('GET', 'POST'))
+@bp.route('/<int:page>')
 def index(page=None):
     form = {}
     if request.method == 'POST':
         form = request.form
+        logging.info(f"get pets with {form}")
     all_pets = PetInfo.get_pets(form=form)
     if page is None or (page-1)*6 >= len(all_pets):
         page = 1

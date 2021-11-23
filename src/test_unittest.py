@@ -138,7 +138,8 @@ def test_set_user_profile():
 def test_create_pet():
     with c.session_transaction() as sess:
         sess['user_id'] = test_uid
-    create_request = {"age": 1, "weight": 10, "type": "dog", "description": "cute dog", "city": "Los Angeles",
+    pet_type = random.choice(["dog", "cat"])
+    create_request = {"age": 1, "weight": 10, "type": pet_type, "description": "cute dog", "city": "Los Angeles",
                       "startdate": "2021-11-1", "enddate": "2021-12-1"}
     check_post(url="/create", request=create_request, expected_string="")
 

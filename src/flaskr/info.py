@@ -234,6 +234,10 @@ class PetInfo:
         if "city" in form:
             pcity = "%" + form["city"] + "%"
         pstartdate, penddate = datetime.datetime.strptime("2000-1-1", "%Y-%m-%d"), datetime.datetime.strptime("3000-1-1", "%Y-%m-%d")
+        if "startdate" in form:
+            pstartdate = datetime.datetime.strptime(form["startdate"], "%Y-%m-%d")
+        if "enddate" in form:
+            penddate = datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
         allpets = PetDB.select().where(PetDB.type ** ptype, PetDB.location ** pcity, PetDB.startdate > pstartdate, PetDB.enddate < penddate).order_by(PetDB.created.desc())
         pets = []
         for pet in allpets:
@@ -241,7 +245,7 @@ class PetInfo:
             image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
             pet["image"] = image["filename"]
             pets.append(pet)
-        logging.info(f"posts: {pets}")
+        # logging.info(f"posts: {pets}")
         return pets
 
     """
