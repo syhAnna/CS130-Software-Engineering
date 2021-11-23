@@ -40,8 +40,8 @@ def check_get(url, expected_string):
     status_code, resp_data = response.status_code, str(response.data)
     assert status_code == 200, f"{url} GET Error: {status_code}"
     ok, err_string = string_in_page(expected_string, resp_data)
-    if "ViewPost" in url:
-        print(resp_data)
+    # if "ViewPost" in url:
+    #     print(resp_data)
     assert ok, f"{url} GET Error: {err_string} not exists in return content"
 
 def check_post(url, expected_string, request, unexpected_string=None):
@@ -49,8 +49,8 @@ def check_post(url, expected_string, request, unexpected_string=None):
     status_code, resp_data = response.status_code, str(response.data)
     assert status_code == 200, f"{url} Post Error: {status_code}"
     ok, err_string = string_in_page(expected_string, resp_data)
-    if "/auth/login" in url and "Type" in err_string:
-        print(resp_data)
+    # if "/auth/login" in url and "Type" in err_string:
+    #     print(resp_data)
     assert ok, f"{url} POST Error: {err_string} not exists in return content"
     if unexpected_string is not None:
         ok, err_string = string_in_page(unexpected_string, resp_data)
