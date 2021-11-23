@@ -13,13 +13,15 @@ from .auth import login_required
 bp = Blueprint('blog', __name__)
 
 # index page
-@bp.route('/',methods=('GET', 'POST'))
-def index():
+@bp.route("/")
+@bp.route('/<int:page>',methods=('GET', 'POST'))
+def index(page=None):
     form = {}
+    form["page"] = page if page is not None else 1
     if request.method == 'POST':
         form = request.form
-    posts = PetInfo.get_pets(form=form)
-    return render_template('blog/index.html', posts=posts)
+    posts, pageInfo = PetInfo.get_pets(form=form)
+    return render_template('blog/index.html', posts=posts, pageInfo=pageInfo)
 
 
 # create a new post
