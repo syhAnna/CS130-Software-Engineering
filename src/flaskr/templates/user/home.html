@@ -3,41 +3,45 @@
 {% block title %}User Home Page{% endblock %}
 
 {% block content %}
+<div class="bg-image p-5"   style="
+background-image: url(../../static/pic/background_8.jpg);
+height: 1200px;
+">
+  <div class="bg-light m-3 pb-5 rounded text-center opacity-75">
 
-<div class="bg-light m-3 rounded text-center">
+        <div class="container-fluid p-3">
+          <div class="row w-75 mx-auto">
+            <div class="col text-center pt-4">
+              <img src="{{ user['image'] }}" width="128" height="128" class="rounded-circle me-2">
+            </div>
+            <div class="col p-4">
+              <h5>{{ user['nickname'] }}</h5>
+              <p>{% if user['email'] %}
+                  {{ user['email'] }}
+                  {% endif %}
+              </p>
+              <p><small class="text-muted"><i class="far fa-calendar-plus fa-1x"></i> <span>{{ user['created'].strftime('%Y-%m-%d') }} Add</span></small></p>
+              <a href="{{ url_for('user.set') }}" class="btn btn-dark m-1 btn-sm">Change Profile</a>
+            </div>
 
-      <div class="container-fluid p-3">
-        <div class="row w-75 mx-auto">
-          <div class="col text-center pt-4">
-            <img src="{{ user['image'] }}" width="128" height="128" class="rounded-circle me-2">
           </div>
-          <div class="col p-4">
-            <h5>{{ user['nickname'] }}</h5>
-            <p>{% if user['email'] %}
-                {{ user['email'] }}
-                {% endif %}
-            </p>
-            <p><small class="text-muted"><i class="far fa-calendar-plus fa-1x"></i> <span>{{ user['created'].strftime('%Y-%m-%d') }} Add</span></small></p>
-            <a href="{{ url_for('user.set') }}" class="btn btn-dark m-1 btn-sm">Change Profile</a>
+        </div>
+
+        <div class="container-fluid">
+            <div class="bg-white shadow w-75 mx-auto mt-3 p-3 rounded">
+              <h6>Recent Published</h6>
+              <ul class="list-group border">
+                  {% for pet in user['pets'] %}
+                  <li class="border-0 list-group-item d-flex justify-content-between align-items-center">
+                      <div class="d-flex w-100 justify-content-between">
+                          <a href="{{ url_for('blog.ViewPost', pet_id=pet['id']) }}" class="link-dark">{{pet['type']}}</a>
+                          <small class="text-muted">{{ pet['created'].strftime('%Y-%m-%d') }}</small>
+                      </div>
+                  </li>
+                  {% endfor %}
+              </ul>
           </div>
-
         </div>
-      </div>
-
-      <div class="container-fluid">
-          <div class="bg-white shadow w-75 mx-auto mt-3 p-3 rounded">
-            <h6>Recent Published</h6>
-            <ul class="list-group border">
-                {% for pet in user['pets'] %}
-                <li class="border-0 list-group-item d-flex justify-content-between align-items-center">
-                    <div class="d-flex w-100 justify-content-between">
-                        <a href="{{ url_for('blog.ViewPost', pet_id=pet['id']) }}" class="link-dark">{{pet['type']}}</a>
-                        <small class="text-muted">{{ pet['created'].strftime('%Y-%m-%d') }}</small>
-                    </div>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-      </div>
+  </div>
 </div>
 {% endblock %}
