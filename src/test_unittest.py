@@ -44,7 +44,7 @@ def check_get(url, expected_string):
         print(resp_data)
     assert ok, f"{url} GET Error: {err_string} not exists in return content"
 
-def check_post(url, expected_string, request):
+def check_post(url, expected_string, request, unexpected_string=None):
     response = c.post(url, data=request, follow_redirects=True)
     status_code, resp_data = response.status_code, str(response.data)
     assert status_code == 200, f"{url} Post Error: {status_code}"
@@ -52,6 +52,9 @@ def check_post(url, expected_string, request):
     if "/auth/login" in url and "Type" in err_string:
         print(resp_data)
     assert ok, f"{url} POST Error: {err_string} not exists in return content"
+    if unexpected_string is not None:
+        ok, err_string = string_in_page(unexpected_string, resp_data)
+        assert not ok, f"{url} POST Error: {unexpected_string} is in return content"
 
 def test_register():
     check_get(url="/auth/register", 
@@ -77,7 +80,6 @@ def test_register():
         check_post(url="/auth/register", 
                 request=register_form.data,
                 expected_string="Login</button>")
-
 
 def test_login():
     check_get(url="/auth/login",
@@ -145,7 +147,7 @@ def test_create_pet():
 
     create_request = {"age": 2, "weight": 15, "type": "dog", "description": "husky", "city": "Los Angeles",
                       "startdate": "2022-11-1", "enddate": "2021-12-1"}
-    check_post(url="/create", request=create_request, expected_string="Oops! End date should after start date :)")
+    check_post(url="/create", request=create_request, expected_string="Oops! End date should be after start date :)")
 
 def test_main_page():
     check_get(url=f"/",
@@ -154,6 +156,12 @@ def test_main_page():
     check_get(url="/ViewPost/1", expected_string="Type")
     reply_request = {'body': 'test reply', 'author_id': 28}
     check_post(url="/ViewPost/1", request=reply_request, expected_string="test reply")
+
+def test_search_page():
+    check_post(url=f"/", request={"type": "cat"},
+                expected_string=["cat"], unexpected_string="dog")
+    check_post(url=f"/", request={"startdate": "2021-11-30", "enddate": "2021-11-01"},
+                expected_string=["End date should be after start date"])
 
 
     

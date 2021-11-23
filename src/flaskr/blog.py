@@ -21,7 +21,9 @@ def index(page=None):
     if request.method == 'POST':
         form = request.form
         logging.info(f"get pets with {form}")
-    all_pets = PetInfo.get_pets(form=form)
+    all_pets, error = PetInfo.get_pets(form=form)
+    if error:
+        flash(error)
     if page is None or (page-1)*6 >= len(all_pets):
         page = 1
     pagination = Pagination(page=page, per_page=6, total=len(all_pets), css_framework="foundation")

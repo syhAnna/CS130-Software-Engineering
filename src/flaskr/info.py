@@ -178,7 +178,7 @@ class PetInfo:
         enddate = datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
 
         if (enddate - startdate).days < 0:
-            error = "Oops! End date should after start date :)"
+            error = "Oops! End date should be after start date :)"
         else:
             pet_id = PetDB.insert({
                 PetDB.image_id: image_id,
@@ -228,16 +228,20 @@ class PetInfo:
     """
     @staticmethod
     def get_pets(form={}):
+        error = None
         ptype, pcity = "%%", "%%"
         if "type" in form:
             ptype = "%" + form["type"] + "%"
         if "city" in form:
             pcity = "%" + form["city"] + "%"
         pstartdate, penddate = datetime.datetime.strptime("2000-1-1", "%Y-%m-%d"), datetime.datetime.strptime("3000-1-1", "%Y-%m-%d")
-        if "startdate" in form:
+        if "startdate" in form and form["startdate"]:
             pstartdate = datetime.datetime.strptime(form["startdate"], "%Y-%m-%d")
-        if "enddate" in form:
+        if "enddate" in form and form["enddate"]:
             penddate = datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
+        if (penddate - pstartdate).days < 0:
+            error = "Oops! End date should be after start date :)"
+            pstartdate, penddate = datetime.datetime.strptime("2000-1-1", "%Y-%m-%d"), datetime.datetime.strptime("3000-1-1", "%Y-%m-%d")
         allpets = PetDB.select().where(PetDB.type ** ptype, PetDB.location ** pcity, PetDB.startdate > pstartdate, PetDB.enddate < penddate).order_by(PetDB.created.desc())
         pets = []
         for pet in allpets:
@@ -246,7 +250,7 @@ class PetInfo:
             pet["image"] = image["filename"]
             pets.append(pet)
         # logging.info(f"posts: {pets}")
-        return pets
+        return pets, error
 
     """
     Get the pet information given a unique pet id
