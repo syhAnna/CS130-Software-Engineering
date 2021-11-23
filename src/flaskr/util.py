@@ -18,7 +18,10 @@ def generate_validate_picture(num_chars = 5):
     # generate an image object and set the fonts
     im = Image.new('RGB',(width, heighth), 'White')
     # font = ImageFont.truetype("arial.ttf", 28, encoding="unic")
-    font = ImageFont.truetype("./static/res/layui/font/Arial", 28, encoding="unic")
+    # This is for Windows
+    # font = ImageFont.truetype("arial.ttf", 28, encoding="unic")
+    # This is for Mac
+    font = ImageFont.truetype("/Library/Fonts/Arial", 28)
     draw = ImageDraw.Draw(im)
     generated_string = ''
     # output each char
