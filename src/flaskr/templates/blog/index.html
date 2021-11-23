@@ -4,31 +4,49 @@
 
 
 {% block content %}
-<div class="bg-image p-5"   style="
-background-image: url(../../static/pic/background_6.jpg);
-height: 1200px;
-">
-  <div class="container-fluid">
-    <div class="row">
+
+
+<div class="container-fluid">
+<!--   <div class="jumbotron text-center">
+  <h1 class="fw-light">CatEatPad</h1>
+  <p class="lead text-muted">Find a temporary home for your pet, or Be a foster family!</p>
+        <p>
+  </div> -->
+
+    <section class="p-3 mb-2 bg-light text-center container-fliud ">
+
+    <div class="row py-lg-5">
+      <div class="col-lg-6 col-md-8 mx-auto">
+        <h1>CatEatPad</h1>
+        <p class="lead text-muted">We help pet owners to find a temporary home for their pets!</p>
+        <p class="lead text-muted">Connect with a foster family? Start with</p>
+        <p class="lead text-muted"></p>
+      </div>
+      {% if g.user %}
+      <div class="text-center">
+        <a href="{{ url_for('blog.create') }}">
+
+        <button type="button" class="btn btn-warning btn-sm">Publish a New Post</button></a>
+      </div>
+      {% else %}
+      <div class="text-center">
+        <p><button type="button" disabled class="btn btn-dark btn-block">Publish a New Post</button></p>
+
+        <small class="text-center text-muted">Please login to Publish</small>
+      </div>
+      {% endif %}
+    </div>
+  </section>
+
+
+  <section>
+  <div class="row">
 
       <div class="col-lg-3">
         <div class="m-2 p-2">
 
-          {% if g.user %}
-          <div class="text-center">
-            <a href="{{ url_for('blog.create') }}">
-            <button type="button" class="btn btn-warning btn-block">Publish New Post</button></a>
-          </div>
-          {% else %}
-          <div class="text-center">
-            <p><button type="button" disabled class="btn btn-dark btn-block">Publish New Post</button></p>
-
-            <small class="text-center text-muted">Login to Publish</small>
-          </div>
-          {% endif %}
-
-          <div class="pt-3">
-          <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column">
+        <div class="pt-3">
+        <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column">
 
             <div class="form-group row">
               <label for="type" class="col-3 col-form-label col-form-label-sm">Type</label>
@@ -57,13 +75,17 @@ height: 1200px;
                 <input type="date" id="enddate" name="enddate" required value="{{ request.form['enddate'] }}" class="form-control form-control-sm">
               </div>
             </div>
-        
-            <button type="submit" class="btn btn-warning">Search</button>
-            
-        
-          </form>
-        </div>
-        </div>
+          </div>
+          <button type="submit" class="btn btn-primary">        
+          <a class="link-secondary" href="#" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
+          Search
+          </a>
+          </button>
+          
+      
+        </form>
+      </div>
       </div>
 
       <div class="col-lg-9">
@@ -95,5 +117,13 @@ height: 1200px;
       </div>
     </div>
   </div>
+
+
+</section>
+
+
+
 </div>
+
+
 {% endblock %}
