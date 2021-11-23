@@ -224,23 +224,13 @@ class PetInfo:
         pstartdate, penddate = datetime.datetime.strptime("2000-1-1", "%Y-%m-%d"), datetime.datetime.strptime("3000-1-1", "%Y-%m-%d")
         allpets = PetDB.select().where(PetDB.type ** ptype, PetDB.location ** pcity, PetDB.startdate > pstartdate, PetDB.enddate < penddate).order_by(PetDB.created.desc())
         pets = []
-        s, e, pageInfo = 0, len(allpets), {}
-        if "page" in form:
-            page, num_pages = form["page"], (len(allpets)+5)//6
-            s, e = (page-1) * 6, page * 6
-            pageInfo = {
-                "prev_num": page-1 if page > 1 else None,
-                "next_num": page+1 if page < num_pages else None,
-                "num_pages": num_pages,
-                "posts_num": len(allpets)
-            }
-        for pet in allpets[s:e]:
+        for pet in allpets:
             pet = model_to_dict(pet)
             image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
             pet["image"] = image["filename"]
             pets.append(pet)
         logging.info(f"posts: {pets}")
-        return pets, pageInfo
+        return pets
 
     """
     Get the pet information given a unique pet id
