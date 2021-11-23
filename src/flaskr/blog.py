@@ -18,11 +18,11 @@ bp = Blueprint('blog', __name__)
 @bp.route('/<int:page>',methods=('GET', 'POST'))
 def index(page=None):
     form = {}
-    if page is None:
-        page = 1
     if request.method == 'POST':
         form = request.form
     all_pets = PetInfo.get_pets(form=form)
+    if page is None or (page-1)*6 >= len(all_pets):
+        page = 1
     pagination = Pagination(page=page, per_page=6, total=len(all_pets), css_framework="foundation")
     s, e = (page-1)*6, min(page*6, len(all_pets))
     # logging.info(f"pagination: {pagination.__dict__}")
@@ -51,6 +51,7 @@ def ViewPost(pet_id):
     if request.method == 'POST':
         form = dict(request.form)
         form["author_id"] = g.user['id']
+        logging.info(f"reply form is {form}")
         ReplyInfo.add_reply(form, pet_id)
 
     pet = PetInfo.get_pet_for_view(pet_id)
@@ -58,6 +59,7 @@ def ViewPost(pet_id):
     return render_template('blog/ViewPost.html', post=pet)
 
 
+# Not implement yet
 # delete a reply by id
 @bp.route('/DeleteReply/<int:id>', methods=('POST',))
 @login_required
@@ -71,27 +73,3 @@ def DeleteReply(id):
 def DeletePost(id):
     PetInfo.delete_pet(id)
     return redirect(url_for('blog.index'))
-
-# def CHECK_DOWNLOADFILE(post_file_id, filename):
-#     with open(filename, "rb") as f:
-#         content = f.read()
-#         filehash = model_to_dict(PostFileDB.select().where(PostFileDB.id == post_file_id).get())['filehash']
-#         if not check_filecontent_hash(filehash, content):
-#             error = "File Has Been Modified"
-#             return error
-
-
-# @bp.route('/DownloadFile/<string:filename>', methods=('POST', ))
-# def DownloadFile(filename):
-#     print(filename)
-#     tmp_list = eval(filename)
-#     filename = tmp_list[0]
-#     post_file_id = tmp_list[1]
-#     post_id = tmp_list[2]
-#     filename = str(post_file_id)+"_"+filename
-#     error = CHECK_DOWNLOADFILE(post_file_id, os.path.join(current_app.config['UPLOAD_FOLDER'], filename))
-#     if error:
-#         flash(error)
-#         return redirect(url_for("blog.ViewPost", id=post_id))
-
-#     return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename, as_attachment=True)

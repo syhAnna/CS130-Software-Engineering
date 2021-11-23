@@ -124,8 +124,20 @@ class UserInfo:
         uinfo["image"] = image["filename"]
         uinfo["pets"] = pets
         return uinfo 
-        # return UserInfo(uid=uid, uname=uinfo["username"], email=uinfo["email"],
-        #                 register_date=uinfo["created"], pets=pets, image=image)
+    
+    @staticmethod
+    def get_user_info_by_username(username):
+        try:
+            uinfo = model_to_dict(UserDB.select(UserDB.id, UserDB.password).where(UserDB.username == username).get())
+        except Exception as err_msg:
+            logging.info(f"ERROR: fail to get user info with {err_msg}")
+            return None
+        logging.info(f"get user info {uinfo}")
+        return uinfo 
+    
+    @staticmethod
+    def check_if_username_exist(username):
+        return len(UserDB.select(UserDB.id).where(UserDB.username == username)) > 0
 
 class PetInfo:
     def __init__(self, pid=-1, plocation="", pstart=None, pend=None,
