@@ -8,6 +8,7 @@ from flask import (
 from .info import *
 from .util import *
 from .auth import login_required
+from flask_paginate import Pagination
 
 
 bp = Blueprint('blog', __name__)
@@ -17,11 +18,15 @@ bp = Blueprint('blog', __name__)
 @bp.route('/<int:page>',methods=('GET', 'POST'))
 def index(page=None):
     form = {}
-    form["page"] = page if page is not None else 1
+    if page is None:
+        page = 1
     if request.method == 'POST':
         form = request.form
-    posts, pageInfo = PetInfo.get_pets(form=form)
-    return render_template('blog/index.html', posts=posts, pageInfo=pageInfo)
+    all_pets = PetInfo.get_pets(form=form)
+    pagination = Pagination(page=page, per_page=6, total=len(all_pets), css_framework="foundation")
+    s, e = (page-1)*6, min(page*6, len(all_pets))
+    # logging.info(f"pagination: {pagination.__dict__}")
+    return render_template('blog/index.html', posts=all_pets[s:e], pagination=pagination)
 
 
 # create a new post
