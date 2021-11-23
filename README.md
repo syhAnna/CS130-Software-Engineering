@@ -32,3 +32,13 @@ bash start.sh
 
 ##### test
 - run `pytest` in `src` to test. more more details, see [testing in Flask](https://flask.palletsprojects.com/en/2.0.x/testing/)
+
+##### How to run on Windows:
+- First, install the required packages as indicated before, using   `py -m pip install *`
+- Then, use the cmd command:
+```
+set FLASK_ENV=development
+set FLASK_DEBUG=1
+set FLASK_APP=flaskr
+py -m flask run
+```
