@@ -6,6 +6,18 @@
 Welcome to CatEatPad's documentation!
 =====================================
 
+.. autoclass:: flaskr.info.ImageInfo
+   :members:
+
+.. autoclass:: flaskr.info.UserInfo
+   :members:
+
+.. autoclass:: flaskr.info.PetInfo
+   :members:
+
+.. autoclass:: flaskr.info.ReplyInfo
+   :members:
+
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
