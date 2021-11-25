@@ -26,6 +26,15 @@ cd src
 bash start.sh
 ```
 
+#### how to generate docs
+Before generating the docs, need to replace reading dbConfig from file in db.py with direct dictionary assignment.
+```bash
+cd src/docs
+make clean
+make html
+```
+Then, the doc is availble in `src/docs/buiild/html/index.html`.
+
 #### Flask
 - [Learn Flask for Python(youtube)](https://www.youtube.com/watch?v=Z1RJmh_OqeA)
 - 
