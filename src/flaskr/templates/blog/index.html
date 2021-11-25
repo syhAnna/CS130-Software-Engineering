@@ -6,24 +6,26 @@
 {% block content %}
 
 <div class="bg-image p-5"   style="
-background-image: url(../../static/pic/background_6.jpg);
+background-image: url(../../static/pic/background_4.jpg);
+background-repeat: no-repeat;
+background-attachment: fixed;
 height: 1200px;
+background-position: center; /* Center the image */
 ">
-  <div class="container-fluid opacity-75">
+  <div class="container-fluid" style="opacity: 0.95;">
   <!--   <div class="jumbotron text-center">
     <h1 class="fw-light">CatEatPad</h1>
     <p class="lead text-muted">Find a temporary home for your pet, or Be a foster family!</p>
           <p>
     </div> -->
 
-      <section class="p-3 mb-2 bg-light text-center container-fliud rounded">
+      <section class="mb-2 bg-light text-center container-fliud rounded">
 
       <div class="row py-lg-5">
         <div class="col-lg-6 col-md-8 mx-auto mb-2">
           <h1>CatEatPad</h1>
           <p class="lead text-muted">We help pet owners to find a temporary home for their pets!</p>
           <p class="lead text-muted">Connect with a foster family? Start with</p>
-          <p class="lead text-muted"></p>
         </div>
         {% if g.user %}
         <div class="text-center">
@@ -52,36 +54,36 @@ height: 1200px;
           <form action="" method="post" enctype="multipart/form-data" class="d-flex flex-column">
 
             <div class="form-group row">
-              <label for="type" class="col-3 col-form-label col-form-label-sm">Type</label>
+              <label for="type" class="col-3 col-form-label col-form-label-sm text-white">Type</label>
               <div class="col-9">
                 <input id="type" name="type" value="{{ request.form['type'] }}" class="form-control form-control-sm" placeholder="Type of pet.">
               </div>
             </div>
         
             <div class="form-group row">
-              <label for="city" class="col-3 col-form-label col-form-label-sm">City</label>
+              <label for="city" class="col-3 col-form-label col-form-label-sm text-white">City</label>
               <div class="col-9">
                 <input id="city" name="city" value="{{ request.form['city'] }}" class="form-control form-control-sm" placeholder="Your location.">
               </div>
             </div>
         
             <div class="form-group row">
-              <label for="startdate" class="col-3 col-form-label col-form-label-sm">Start</label>
+              <label for="startdate" class="col-3 col-form-label col-form-label-sm text-white">Start</label>
               <div class="col-9">
                 <input type="date" id="startdate" name="startdate" value="{{ request.form['startdate'] }}" class="form-control form-control-sm">
               </div>
             </div>
         
             <div class="form-group row">
-              <label for="enddate" class="col-3 col-form-label col-form-label-sm">End</label>
+              <label for="enddate" class="col-3 col-form-label col-form-label-sm text-white">End</label>
               <div class="col-9">
                 <input type="date" id="enddate" name="enddate" value="{{ request.form['enddate'] }}" class="form-control form-control-sm">
               </div>
             </div>
             <a class="link-secondary" href="/" aria-label="Search"></a>
-            <button type="submit" class="btn btn-light">        
-            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="mx-3" role="img" viewBox="0 0 24 24"><title>Search</title><circle cx="10.5" cy="10.5" r="7.5"/><path d="M21 21l-5.2-5.2"/></svg>
-            Search
+            <button type="submit" class="btn btn-warning">
+              <i class="fas fa-search"></i>
+              Search
             </button>
             </a>
             

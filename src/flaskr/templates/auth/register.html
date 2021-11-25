@@ -1,10 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
 <div class="bg-image p-5"   style="
-background-image: url(../../static/pic/background_2.jpg);
+background-image: url(../../static/pic/background_7.jpg);
+background-repeat: no-repeat;
+background-attachment: fixed;
 height: 1200px;
 ">
-    <div class="form-signin text-center bg-light rounded">
+    <div class="form-signin text-center bg-light rounded" style="opacity: 0.95;">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
             <img src="{{url_for('static', filename='pic/CatEatPad_logo.png')}}" width="128" height="128" class="rounded-circle me-2">
