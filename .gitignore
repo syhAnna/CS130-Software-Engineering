@@ -3,3 +3,4 @@
 *dbConfig.json
 *.log
 *upload_folder*
+*.DS_Store
