@@ -21,12 +21,12 @@ class ImageInfo:
         :return: a dictionary of all the information about an image, including filename location, created time, and file hash value
         :rtype: dictionary
         """        
-        image = model_to_dict(ImageDB.select(ImageDB.filename, ImageDB.filehash).where(ImageDB.id == image_id).get())
+        image = model_to_dict(ImageDB.select().where(ImageDB.id == image_id).get())
         if image_id > 2:
             image["filename"] = os.path.join(UPLOAD_FOLDER, str(image_id) + "_" + image["filename"])
         else:
             image["filename"] = os.path.join("/static/pic/", image["filename"])
-        # logging.info(f"get_image_by_id({image_id}) returns {image}")
+        logging.info(f"get_image_by_id({image_id}) returns {image}")
         return image
     
     @staticmethod
@@ -41,7 +41,7 @@ class ImageInfo:
         :rtype: int
         """        
         file_content = file.read()
-        logging.info(f"add_new_image {file.filename}, {file_content}")
+        logging.info(f"add_new_image {file.filename}")
         filename = secure_filename(file.filename)
         filehash = generate_filecont_hash(file_content)
 
@@ -95,7 +95,7 @@ class UserInfo:
             UserDB.password: password,
             UserDB.email: email,
             UserDB.created: datetime.datetime.now(),
-            UserDB.image_id: 2
+            UserDB.image_id: 1
         }).execute()
         return uid
     
@@ -210,11 +210,13 @@ class PetInfo:
             if not os.path.exists(savepath):
                 os.mkdir(savepath)
             image_id = ImageInfo.add_new_image(file, savepath)
+        elif "dog" in form["type"].lower():
+            image_id = 2
 
         pet_id, error = None, ""
         startdate = datetime.datetime.strptime(form["startdate"], "%Y-%m-%d")
         enddate = datetime.datetime.strptime(form["enddate"], "%Y-%m-%d")
-
+        logging.info(f"create pet with image id:{image_id}")
         if (enddate - startdate).days < 0:
             error = "Oops! End date should be after start date :)"
         else:
@@ -281,10 +283,14 @@ class PetInfo:
         pets = []
         for pet in allpets:
             pet = model_to_dict(pet)
+            logging.info(f"image_id is {pet['image']['id']} for {pet['id']}")
             image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
+            logging.info(image)
             pet["image"] = image["filename"]
+            pet["owner"].pop("password")
+            pet["owner"].pop("image")
             pets.append(pet)
-        # logging.info(f"posts: {pets}")
+        logging.info(f"posts: {pets[:5]}")
         return pets, error
 
     @staticmethod
@@ -297,7 +303,8 @@ class PetInfo:
         :rtype: dictionary
         """        
         pet = model_to_dict(PetDB.select().where(PetDB.id == pet_id).get())
-        pet["username"] = pet["owner"]["username"] # TODO: modify username to owner_name
+        pet["username"] = pet["owner"]["username"]
+        pet["owner_id"] = pet["owner"]["id"]
         pet.pop("owner")
         image = ImageInfo.get_image_by_id(image_id=pet["image"]["id"])
         pet["image"] = image["filename"]

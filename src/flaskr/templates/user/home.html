@@ -21,7 +21,9 @@ height: 1200px;
                   {% endif %}
               </p>
               <p><small class="text-muted"><i class="far fa-calendar-plus fa-1x"></i> <span>{{ user['created'].strftime('%Y-%m-%d') }} Add</span></small></p>
-              <a href="{{ url_for('user.set') }}" class="btn btn-dark m-1 btn-sm">Change Profile</a>
+              {% if g.user and user["id"] == g.user["id"] %}
+                <a href="{{ url_for('user.set') }}" class="btn btn-dark m-1 btn-sm">Change Profile</a>
+              {% endif %}
             </div>
 
           </div>
