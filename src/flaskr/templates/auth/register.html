@@ -1,11 +1,5 @@
 {% extends "base.html" %}
 {% block content %}
-<div class="bg-image p-5"   style="
-background-image: url(../../static/pic/background_7.jpg);
-background-repeat: no-repeat;
-background-attachment: fixed;
-height: 1200px;
-">
     <div class="form-signin text-center bg-light rounded" style="opacity: 0.95;">
         <form method="POST" action="">
             {{ form.hidden_tag() }}
@@ -99,5 +93,4 @@ height: 1200px;
             <p class="mt-3 text-muted">Already Have An Account? <a href="{{ url_for('auth.login') }}">Login</a></p>
         </form>
     </div>
-</div>
 {% endblock content %}
