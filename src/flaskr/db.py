@@ -57,11 +57,11 @@ class ReplyDB(BaseModel):
 mydatabase.create_tables([UserDB, PetDB, ReplyDB, ImageDB])
 if ImageDB.select().count() < 2:
     ImageDB.insert({
-        ImageDB.filename: "default_cat_image.jpeg",
+        ImageDB.filename: "default_image.jpeg",
         ImageDB.created: datetime.datetime.now()
     }).execute()
     ImageDB.insert({
-        ImageDB.filename: "default_dog_image.jpeg",
+        ImageDB.filename: "default_dog_image.gif",
         ImageDB.created: datetime.datetime.now()
     }).execute()
 def init_app(app):

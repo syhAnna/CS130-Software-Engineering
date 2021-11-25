@@ -54,6 +54,7 @@ def check_post(url, expected_string, request, unexpected_string=None):
     assert ok, f"{url} POST Error: {err_string} not exists in return content"
     if unexpected_string is not None:
         ok, err_string = string_in_page(unexpected_string, resp_data)
+        print(resp_data)
         assert not ok, f"{url} POST Error: {unexpected_string} is in return content"
 
 def test_register():
@@ -141,8 +142,16 @@ def test_create_pet():
     with c.session_transaction() as sess:
         sess['user_id'] = test_uid
     pet_type = random.choice(["dog", "cat"])
-    create_request = {"age": 1, "weight": 10, "type": pet_type, "description": "cute dog", "city": "Los Angeles",
-                      "startdate": "2021-11-1", "enddate": "2021-12-1"}
+    city = random.choice(["Los Angeles", "San Diego", "Philadelphia", "New York"])
+    age, weight, description = 1, 10, "cute dog"
+    if pet_type == "dog":
+        age, weight, description = random.choice([
+            (1, 10, "Affenpinscher"), 
+            (4, 50, "AfghanHounds"), 
+            (4, 20, "Shiba Inu")
+        ])
+    create_request = {"age": age, "weight": weight, "type": pet_type, "description": description, "city": city,
+                      "startdate": "2021-12-11", "enddate": "2021-12-19"}
     check_post(url="/create", request=create_request, expected_string="")
 
     create_request = {"age": 2, "weight": 15, "type": "dog", "description": "husky", "city": "Los Angeles",
