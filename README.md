@@ -1,7 +1,14 @@
-#### About CatEatPad
-#### TODOList
-- show the display picture
-- search function
+### About CatEatPad
+#### main Structure
+##### FrontEnd 
+The source code of FrontEnd is in `flaskr/templates`. 
+##### BackEnd 
+- `auth.py`: code for login and register
+- `blog.py`: code for main page, creating post and comment
+- `user.py`: code for user profile
+##### Database 
+- `info.py`: create a API of modifying database 
+- `db.py`: define table and connect with MySQL
 
 #### how to Run CatEatPad
 ##### download mysql
@@ -10,7 +17,7 @@
 - run `mysql -u root -p` in terminal, create a database named "CatEatPad" by executing `CREATE DATABASE CatEatPad;`
 
 ##### run
-- **run `. venv/bin/activate` first!!!**
+- run `bash start.sh` in `src` dictionary 
 - theoretically every library we need should be contained by `venv`, if you want to pip install something,  please remember to run `. venv/bin/activate` first
 - add `dbConfig.json` under `src/flaskr/` 
 ```json
@@ -21,10 +28,6 @@
     "database": "CatEatPad"
 }
 ```
-```bash
-cd src
-bash start.sh
-```
 
 #### how to generate docs
 Before generating the docs, need to replace reading dbConfig from file in db.py with direct dictionary assignment.
@@ -33,11 +36,7 @@ cd src/docs
 make clean
 make html
 ```
-Then, the doc is availble in `src/docs/buiild/html/index.html`.
-
-#### Flask
-- [Learn Flask for Python(youtube)](https://www.youtube.com/watch?v=Z1RJmh_OqeA)
-- 
+Then, the doc is availble in `src/docs/build/html/index.html`. 
 
 ##### test
 - run `pytest` in `src` to test. more more details, see [testing in Flask](https://flask.palletsprojects.com/en/2.0.x/testing/)
@@ -51,3 +50,6 @@ set FLASK_DEBUG=1
 set FLASK_APP=flaskr
 py -m flask run
 ```
+
+#### about Flask
+- [Learn Flask for Python(youtube)](https://www.youtube.com/watch?v=Z1RJmh_OqeA)

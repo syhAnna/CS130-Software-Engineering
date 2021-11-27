@@ -18,7 +18,9 @@
             <p class="m-2"><strong>Description: </strong>{{post['description']}}</p>
           </div>
           <div class="col-sm-4 text-center pt-4">
+            <a href="{{ url_for('user.home', user_id=post['owner_id']) }}">
               <img src="{{post['image']}}" width="96" height="96" class="rounded-circle me-2">
+            </a>
           </div>
         </div>
       </div>
