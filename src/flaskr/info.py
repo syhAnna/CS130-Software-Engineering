@@ -167,12 +167,12 @@ class UserInfo:
     
     @staticmethod
     def check_if_username_exist(username):
-        """[summary]
+        """chechs whether the username already exists in the database
 
-        :param username: [description]
-        :type username: [type]
-        :return: [description]
-        :rtype: [type]
+        :param username: the proposed username
+        :type username: string
+        :return: whether the username exists in the database
+        :rtype: boolean
         """        
         return len(UserDB.select(UserDB.id).where(UserDB.username == username)) > 0
 
