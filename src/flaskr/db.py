@@ -3,6 +3,7 @@
 # create a connection to it. Any queries and operations are performed using the connection
 # define tables that need to be used
 
+import sys
 from collections import defaultdict
 from flask import current_app, g
 from flask.cli import with_appcontext
@@ -10,13 +11,16 @@ import json
 import datetime
 from peewee import *
 
-dbConfig = json.load(open("flaskr/dbConfig.json"))
+try:
+    dbConfig = json.load(open("flaskr/dbConfig.json"))
+except:
+    dbConfig = json.load(open("../flaskr/dbConfig.json"))
 mydatabase = MySQLDatabase(host=dbConfig["host"],
-                           user=dbConfig["user"],
-                           passwd=dbConfig["passwd"],
-                           database=dbConfig["database"],
-                           charset="utf8",
-                           port=3306)
+                        user=dbConfig["user"],
+                        passwd=dbConfig["passwd"],
+                        database=dbConfig["database"],
+                        charset="utf8",
+                        port=3306)
 mydatabase.connect()
 
 class BaseModel(Model):
